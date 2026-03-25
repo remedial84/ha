@@ -23,6 +23,7 @@ media/
 tts/
 image_cache/
 downloads/
+www/
 
 # Sensitive Data (VERY IMPORTANT)
 secrets.yaml
