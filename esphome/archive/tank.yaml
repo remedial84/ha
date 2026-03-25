@@ -1,0 +1,42 @@
+esphome:
+  name: tank
+  platform: ESP8266
+  board: d1_mini
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+ota:
+  password: "d816a0f29ff00fbe04d80c439992ec3e"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Tank Fallback Hotspot"
+    password: "eSOdl74isMP9"
+
+captive_portal:
+
+switch:
+  # Switch to restart the doorbell.
+  - platform: restart
+    name: Tank Sensor Restart
+    
+sensor:
+  - platform: ultrasonic
+    trigger_pin: D6
+    echo_pin: D7
+    name: "Tank Depth Sensor"
+    update_interval: 2s
+    timeout: 6.0m
+    accuracy_decimals: 6
+#    unit_of_measurement: "cm"
+    filters:
+     - filter_out: nan
+#     - multiply: 100

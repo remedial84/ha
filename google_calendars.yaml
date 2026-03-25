@@ -1,0 +1,60 @@
+
+- cal_id: remedial@gmail.com
+  entities:
+  - device_id: chris_woodbridge
+    ignore_availability: true
+    name: Chris Woodbridge
+    track: true
+
+- cal_id: addressbook#contacts@group.v.calendar.google.com
+  entities:
+  - device_id: contacts
+    ignore_availability: true
+    name: Contacts
+    track: true
+
+- cal_id: en.australian#holiday@group.v.calendar.google.com
+  entities:
+  - device_id: holidays_in_australia
+    ignore_availability: true
+    name: Holidays in Australia
+    track: true
+
+- cal_id: woodbridge.valerie@gmail.com
+  entities:
+  - device_id: valerie_woodbridge
+    ignore_availability: true
+    name: Valerie Woodbridge
+    track: true
+
+- cal_id: mcutie@gmail.com
+  entities:
+  - device_id: myat_mon
+    ignore_availability: true
+    name: Myat Mon
+    track: true
+
+- cal_id: family14528436763351886468@group.calendar.google.com
+  entities:
+  - device_id: family
+    ignore_availability: true
+    name: Family
+    track: true
+
+- cal_id: sn48mhsu708q2jj1gvjpnataek@group.calendar.google.com
+  entities:
+  - device_id: collingwood_magpies_football_club
+    ignore_availability: true
+    name: Collingwood Magpies Football Club
+
+- cal_id: family12546089636118408856@group.calendar.google.com
+  entities:
+  - device_id: family
+    ignore_availability: true
+    name: Family
+
+- cal_id: wesley.woodbridge@gmail.com
+  entities:
+  - device_id: wesley_woodbridge_gmail_com
+    ignore_availability: true
+    name: wesley.woodbridge@gmail.com

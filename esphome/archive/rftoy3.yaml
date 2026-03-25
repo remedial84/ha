@@ -1,0 +1,170 @@
+esphome:
+  name: rftoy3
+  platform: ESP8266
+  board: esp12e
+
+wifi:
+  ssid: "Bellerophon"
+  password: "wibblywobblytimeywimey"
+  # ...
+  manual_ip:
+    # Set this to the IP of the ESP
+    static_ip: 192.168.14.207
+    # Set this to the IP address of the router. Often ends with .1
+    gateway: 192.168.14.1
+    # The subnet of the network. 255.255.255.0 works for most home networks.
+    subnet: 255.255.255.0
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Rftoy3 Fallback Hotspot"
+    password: "TmQEptLDCYhB"
+
+captive_portal:
+
+# Enable logging
+logger:
+  level: DEBUG
+  
+# Enable Home Assistant API
+api:
+
+ota:
+  
+# Enable Web server.
+web_server:
+  port: 80
+
+# Sync time with Home Assistant.
+time:
+  - platform: homeassistant
+    id: ha_time
+
+font:
+  - file: "arial.ttf"
+    id: my_font
+    size: 10
+    
+i2c:
+
+display:
+  - platform: ssd1306_i2c
+    model: "SSD1306 128x64"
+    lambda: |-
+      // Print the string "Hello World!" at [0,10]
+      it.strftime(0, 0, id(my_font), "%Y-%m-%d %H:%M", id(ha_time).now());
+      //Then print whatever I tell you to
+      it.printf(0, 14, id(my_font), "%s", id(rftoy3_text).state.c_str());
+    
+text_sensor:
+  - platform: homeassistant
+    entity_id: input_text.rftoy3_text
+    name: "RFToy Text"
+    id: rftoy3_text
+  # Expose ESPHome version as sensor.
+  - platform: version
+    name: Doorbell ESPHome Version
+  # Expose WiFi information as sensors.
+  - platform: wifi_info
+    ip_address:
+      name: Doorbell IP
+    ssid:
+      name: Doorbell SSID
+
+# Sensors with general information.
+sensor:
+  # Uptime sensor.
+  - platform: uptime
+    name: Doorbell Uptime
+
+  # WiFi Signal sensor.
+  - platform: wifi_signal
+    name: Doorbell WiFi Signal
+    update_interval: 60s
+
+# Global to store the on/off state of the chime
+globals:
+  - id: chime
+    type: bool
+    restore_value: true
+    initial_value: 'true'
+
+# Exposed switches.
+switch:
+  # Switch to restart the doorbell.
+  - platform: restart
+    name: Doorbell Restart
+#  - platform: template
+#    name: "Panasonic TV Off"
+#    turn_on_action:
+#      remote_transmitter.transmit_panasonic:
+#        address: 0x4004
+#        command: 0x100BCBD    
+      
+remote_receiver:
+  pin: 14
+  #dump: all
+  dump: rc_switch
+  # Settings to optimize recognition of RF devices
+  tolerance: 50%
+  filter: 250us
+  idle: 4ms
+  buffer_size: 2kb
+  
+remote_transmitter:
+  pin: 16
+  # RF uses a 100% carrier signal
+  carrier_duty_percent: 100%
+
+# Setup the PCF8574 Expander Board
+pcf8574:
+  - id: 'pcf8574_hub'
+    address: 0x20
+    pcf8575: False
+
+# Individual outputs
+binary_sensor:
+  - platform: gpio
+    name: "Button 1"
+    pin:
+      pcf8574: pcf8574_hub
+      # Use pin number 0
+      number: 1
+      # One of INPUT or OUTPUT
+      mode: INPUT
+      inverted: True
+  - platform: gpio
+    pin:
+      number: 0
+      inverted: True
+    name: "Button 2"
+  - platform: gpio
+    name: "Button 3"
+    pin:
+      pcf8574: pcf8574_hub
+      # Use pin number 0
+      number: 3
+      # One of INPUT or OUTPUT
+      mode: INPUT
+      inverted: True      
+  - platform: remote_receiver
+    name: "Doorbell"
+    rc_switch_raw:
+      code: 'xxxxxxxxxx'
+      protocol: 2
+    filters:
+      delayed_off: 500ms
+  - platform: remote_receiver
+    name: "Doorbell2"
+    rc_switch_raw:
+      code: 'xxxxxxxxx'
+      protocol: 2
+    filters:
+      delayed_off: 500ms
+  - platform: remote_receiver
+    name: "Doorbell3"
+    rc_switch_raw:
+      code: 'xxxxxxxxxxx'
+      protocol: 2
+    filters:
+      delayed_off: 500ms      

@@ -1,0 +1,506 @@
+homeassistant:
+  customize: !include customize.yaml
+  customize_glob: !include customize_glob.yaml
+  customize_domain: !include customize_domain.yaml
+  packages: 
+    watchdog: !include packages/watchdog.yaml
+# Configure a default setup of Home Assistant (frontend, api, etc)
+default_config:
+
+#Reverse Proxy
+http:
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - 192.168.14.0/23  # Add the IP address of the proxy server
+    - 172.30.33.0/24 # Docker container 
+    - 127.0.0.1       # Localhost
+    - ::1             # IPv6 Localhost
+
+# Text to speech
+tts:
+  - platform: google_translate
+  - platform: google_cloud
+    key_file: google_cloud.json
+    voice: en-AU-Chirp3-HD-Leda
+    profiles:
+      - small-bluetooth-speaker-class-device
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+config:
+
+python_script:
+
+conversation:
+
+frontend:
+  themes: !include_dir_merge_named themes
+
+logger:
+  default: warning
+  logs:
+    homeassistant.components.python_script: info
+    homeassistant.helpers.entity: fatal   
+
+notify:
+  - name: allphones
+    platform: group
+    services:
+      - service: mobile_app_pixel_9_pro_fold
+      - service: mobile_app_pixel_9_pro_xl
+      - service: mobile_app_yinlay
+      - service: mobile_app_yins_iphone
+  - platform: discord
+    token: !secret discord_tok
+    name: twelve      
+
+google_assistant:
+  project_id: home-assistance-279907
+  service_account: !include SERVICE_ACCOUNT.JSON
+  report_state: true
+  exposed_domains:
+    - light
+    - vacuum
+    - cover
+    - climate
+    - camera
+  entity_config:
+    # Explicitly expose the switches you want
+    switch.pi_hole:
+      name: Pi Hole
+      expose: true
+      aliases:
+        - Pie Hole
+        - Ad Blocker
+    switch.popups_station:
+      name: Popup Sprinkler
+      expose: true
+      aliases:
+        - Sprinkler
+        - Popups
+        - Grass
+        - Watering
+        - Sprinklers
+    switch.tap_station:
+      name: Tap
+      expose: true
+      aliases:
+        - Tap
+        - Hose
+    switch.veggie_patch_station:
+      name: Veggie Patch
+      expose: true
+      aliases:
+        - Garden Bed
+        - Veggie Patch
+        - Irrigation
+        - Back Fence
+
+    # ─── LIGHTS ──────────────────────────────────────────────────────────────
+    # Strategy: expose Hue group entities only, hide individual bulbs.
+    # This prevents Google from trying to control both the group and
+    # individual bulbs simultaneously, which causes partial/conflicting control.
+
+    # Hue groups — exposed with friendly voice names
+    light.upstairs:
+      name: Upstairs Light
+      aliases:
+        - Upstairs
+        - Upstairs lights
+    light.downstairs:
+      name: Downstairs Light
+      aliases:
+        - Downstairs
+        - Downstairs lights
+    light.valeries:
+      name: Valerie's Light
+      aliases:
+        - Valerie's room
+        - Valerie's bedroom
+    light.hallway_light:
+      name: Hallway Light
+      aliases:
+        - Hallway
+    light.master_bedroom_light:
+      name: Master Bedroom Light
+      aliases:
+        - Bedroom light
+        - Master bedroom
+        - Our bedroom
+    light.office:
+      name: Office Light
+      aliases:
+        - Office
+        - Office lights
+    light.deck:
+      name: Deck Light
+      aliases:
+        - Deck
+        - Deck lights
+        - Outside lights
+    light.foyer:
+      name: Foyer Light
+      aliases:
+        - Foyer
+        - Entry
+        - Entrance
+
+    # Individual bulbs and downlights — hide from Google to avoid conflicts
+    # Google controls rooms via the group entities above
+    light.hallway_1:
+      expose: false
+    light.hallway_2:
+      expose: false
+    light.hallway_3:
+      expose: false
+    light.hallway_4:
+      expose: false
+    light.down_hallway_1:
+      expose: false
+    light.down_hallway_2:
+      expose: false
+    light.down_hallway_3:
+      expose: false
+    light.down_office_1:
+      expose: false
+    light.down_office_2:
+      expose: false
+    light.down_office_3:
+      expose: false
+    light.down_office_4:
+      expose: false
+    light.living_room_downlight_1:
+      expose: false
+    light.living_room_downlight_2:
+      expose: false
+    light.living_room_downlight_3:
+      expose: false
+    light.living_room_downlight_4:
+      expose: false
+    light.living_room_downlight_5:
+      expose: false
+    light.living_room_downlight_6:
+      expose: false
+    light.table_1:
+      expose: false
+    light.table_2:
+      expose: false
+    light.table_3:
+      expose: false
+    light.table_4:
+      expose: false
+    light.cooking_1:
+      expose: false
+    light.cooking_2:
+      expose: false
+    light.cooking_3:
+      expose: false
+    light.cooking_4:
+      expose: false
+    light.cooking_5:
+      expose: false
+    light.family_1:
+      expose: false
+    light.family_2:
+      expose: false
+    light.family_3:
+      expose: false
+    light.family_4:
+      expose: false
+    light.master_bedroom_1:
+      expose: false
+    light.master_bedroom_2:
+      expose: false
+    light.master_bedroom_3:
+      expose: false
+    light.master_bedroom_4:
+      expose: false
+    light.master_bedroom_5:
+      expose: false
+    light.master_bedroom_6:
+      expose: false
+    light.master_bedroom_7:
+      expose: false
+    light.master_bathroom_1:
+      expose: false
+    light.master_bathroom:
+      expose: false
+    light.valerie_1:
+      expose: false
+    light.valerie_2:
+      expose: false
+    light.valerie_3:
+      expose: false
+    light.valerie_4:
+      expose: false
+    light.wesley_1:
+      expose: false
+    light.wesley_2:
+      expose: false
+    light.wesley_3:
+      expose: false
+    light.wesley_4:
+      expose: false
+    light.rumpus_1:
+      expose: false
+    light.rumpus_2:
+      expose: false
+    light.rumpus_3:
+      expose: false
+    light.rumpus_4:
+      expose: false
+    light.rumpus_5:
+      expose: false
+    light.rumpus_6:
+      expose: false
+    light.rumpus_store_1:
+      expose: false
+    light.rumpus_store_2:
+      expose: false
+    light.office_1:
+      expose: false
+    light.office_2:
+      expose: false
+    light.front_steps_1:
+      expose: false
+    light.front_steps_2:
+      expose: false
+    light.guest_1:
+      expose: false
+    light.pantry_1:
+      expose: false
+    light.hallway_light:
+      expose: false
+    light.stair_bottom_lights:
+      expose: false
+    light.stair_bottom_1:
+      expose: false
+    light.tv_lights:
+      expose: false
+    light.pond:
+      expose: false
+    light.storage:
+      expose: false
+    light.front_steps:
+      expose: false
+    light.deck_light_1:
+      expose: false
+    light.deck_light_2:
+      expose: false
+    light.deck_light_3:
+      expose: false
+    light.deck_light_4:
+      expose: false
+
+    # COVERS / ROLLER SHUTTERS
+    # NOTE: entity IDs below are placeholders replace with your actual
+    # cover entity IDs from Developer Tools States filtered to 'cover'
+    # The family room shutter is the only one currently known.
+
+    cover.family_room_roller_shutter:
+      name: Family Room Shutter
+      aliases:
+        - Family room blind
+        - Family room window
+        - Buddha window
+        - Buddha blind
+
+    # Add your other 4 covers here once you confirm their entity IDs:
+    # cover.YOUR_ENTITY:
+    #   name: Living Room Shutter
+    #   aliases:
+    #     - Living room blind
+    #     - Living room window
+
+    # Adaptive lighting hide completely from Google
+    # Managed by HA automations only
+    switch.adaptive_lighting_downstairslights:
+      expose: false
+    switch.adaptive_lighting_kitchenlights:
+      expose: false
+    switch.adaptive_lighting_mostlights:
+      expose: false
+    switch.adaptive_lighting_adapt_brightness_mostlights:
+      expose: false
+    switch.adaptive_lighting_adapt_color_mostlights:
+      expose: false
+    switch.adaptive_lighting_adapt_brightness_kitchenlights:
+      expose: false
+    switch.adaptive_lighting_adapt_color_kitchenlights:
+      expose: false
+    switch.adaptive_lighting_adapt_brightness_downstairslights:
+      expose: false
+    switch.adaptive_lighting_adapt_color_downstairslights:
+      expose: false
+    switch.adaptive_lighting_sleep_mode_downstairslights:
+      expose: false
+    switch.adaptive_lighting_sleep_mode_kitchenlights:
+      expose: false
+    switch.adaptive_lighting_sleep_mode_mostlights:
+      expose: false
+
+    # Sprinkler station enable switches not useful for voice control
+    switch.plugged_station:
+      expose: false
+    switch.s05_station_enabled:
+      expose: false
+    switch.s06_station_enabled:
+      expose: false
+    switch.s07_station_enabled:
+      expose: false
+    switch.s08_station_enabled:
+      expose: false
+
+    # Speaker do-not-disturb switches not useful for voice control
+    switch.baby_speaker_do_not_disturb:
+      expose: false
+    switch.deck_speaker_do_not_disturb:
+      expose: false
+    switch.kitchen_speaker_do_not_disturb:
+      expose: false
+    switch.living_room_speaker_do_not_disturb:
+      expose: false
+    switch.master_bedroom_speaker_do_not_disturb:
+      expose: false
+    switch.office_speaker_do_not_disturb:
+      expose: false
+
+    # Removed/deleted devices kept as expose: false in case
+    # entities reappear after integration changes
+    switch.transmission_switch:
+      expose: false
+    switch.transmission_turtle_mode:
+      expose: false
+    switch.tank_sensor_restart:
+      expose: false
+    switch.doorbell_chime:
+      expose: false
+    switch.doorbell_chime_active:
+      expose: false
+    switch.doorbell_restart:
+      expose: false
+    switch.doorbell_restart_2:
+      expose: false
+    switch.panasonic_tv_off:
+      expose: false
+
+    # Heaters removed replaced by iZone
+    switch.wesleys_heater:
+      expose: false
+    switch.valerie_s_heater:
+      expose: false
+    switch.bedroom_heater:
+      expose: false
+    switch.office_heater:
+      expose: false
+
+template:
+  - sensor:
+    - name: "Garbage"
+      unique_id: sensor.garbage
+      icon: "mdi:trash-can-outline"
+      state: >
+        {% set midnight = today_at() %}
+        {% set event = state_attr('calendar.garbage', 'start_time') | as_datetime | as_local %}
+        {% set delta = event - midnight %}
+        {% if delta.days == 0 %}
+          0
+        {% elif delta.days == 1 %}
+          1
+        {% elif delta.days > 1 %}
+          2
+        {% endif %}
+    - name: "Recycling"
+      unique_id: sensor.recycling
+      icon: "mdi:recycle"
+      state: >
+        {% set midnight = today_at() %}
+        {% set event = state_attr('calendar.recycling', 'start_time') | as_datetime | as_local %}
+        {% set delta = event - midnight %}
+        {% if delta.days == 0 %}
+          0
+        {% elif delta.days == 1 %}
+          1
+        {% elif delta.days > 1 %}
+          2
+        {% endif %}
+    - name: "Green Waste"
+      unique_id: sensor.green_waste
+      icon: "mdi:leaf-circle-outline"
+      state: >
+        {% set midnight = today_at() %}
+        {% set event = state_attr('calendar.green_waste', 'start_time') | as_datetime | as_local %}
+        {% set delta = event - midnight %}
+        {% if delta.days == 0 %}
+          0
+        {% elif delta.days == 1 %}
+          1
+        {% elif delta.days > 1 %}
+          2
+        {% endif %}
+  - switch:
+    - unique_id: switch.popups_station
+      turn_on:
+      - data_template:
+          entity_id: binary_sensor.popup_station_running
+          run_seconds: '{{ ((states(''input_number.station_run_time'') | float) * 60)
+            | int }}'
+        action: opensprinkler.run
+      turn_off:
+      - data:
+          entity_id: binary_sensor.popup_station_running
+        action: opensprinkler.stop
+      default_entity_id: switch.popups_station
+      icon: mdi:sprinkler
+      name: Popups Station
+      state: '{{ is_state(''binary_sensor.popup_station_running'', ''on'') }}'
+  - switch:
+    - unique_id: switch.tap_station
+      turn_on:
+      - data_template:
+          entity_id: binary_sensor.tap_station_running
+          run_seconds: '{{ ((states(''input_number.station_run_time'') | float) * 60)
+            | int }}'
+        action: opensprinkler.run
+      turn_off:
+      - data:
+          entity_id: binary_sensor.tap_station_running
+        action: opensprinkler.stop
+      default_entity_id: switch.tap_station
+      icon: mdi:water-pump
+      name: Tap Station
+      state: '{{ is_state(''binary_sensor.tap_station_running'', ''on'') }}'
+  - switch:
+    - unique_id: switch.veggie_patch_station
+      turn_on:
+      - data_template:
+          entity_id: binary_sensor.veggie_patch_station_running
+          run_seconds: '{{ ((states(''input_number.station_run_time'') | float) * 60)
+            | int }}'
+        action: opensprinkler.run
+      turn_off:
+      - data:
+          entity_id: binary_sensor.veggie_patch_station_running
+        action: opensprinkler.stop
+      default_entity_id: switch.veggie_patch_station
+      icon: mdi:flower
+      name: Veggie Patch Station
+      state: '{{ is_state(''binary_sensor.veggie_patch_station_running'', ''on'') }}'
+  - switch:
+    - unique_id: switch.plugged_station
+      turn_on:
+      - data_template:
+          entity_id: binary_sensor.plugged_station_running
+          run_seconds: '{{ ((states(''input_number.station_run_time'') | float) * 60)
+            | int }}'
+        action: opensprinkler.run
+      turn_off:
+      - data:
+          entity_id: binary_sensor.plugged_station_running
+        action: opensprinkler.stop
+      default_entity_id: switch.plugged_station
+      name: Plugged Station
+      state: '{{ is_state(''binary_sensor.plugged_station_running'', ''on'') }}'

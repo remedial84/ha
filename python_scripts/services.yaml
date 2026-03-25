@@ -1,0 +1,56 @@
+#services.yaml
+clean_rooms:
+  description: A service that makes a list of rooms to clean and sets it to Rosie
+  fields:
+    room:
+      description: The name of the room or rooms to be cleaned.
+      example: The kitchen and bathroom.
+
+whats_on:
+  description: Checks whats on and tell people with a thing that might let them turn it off?
+  fields:
+    reason:
+      description: The reason for checking what's on
+      example: Everyone has left the house
+      
+set_state:
+  description: Sets the state of an object which for some reason needs to be done through python
+  fields:
+    entity_id:
+      description: The entity to set_state of
+      example: person.valerie
+    state:
+      description: The new value for the state
+      example: not_home
+    friendly_name:
+      description: Then as many named attributes as you like
+      example: Valerie
+
+washing_complete:
+  description: When the washing is complete assigns a random person who is home to hang it out
+
+home_and_away:
+  description: Comprehensive script for announcing when someone arrives or leaves the house.
+  fields:
+    direction:
+      description: Which way is the person going?
+      example: home
+    person:
+      description: The entity ID of the person doing the thing
+      example: person.chris
+
+announcement:
+  description: Sends an announcment, central location for making announcements and managing current playback
+  fields:
+    message:
+      description: The message to announce.
+      example: Chris is just really good at things
+    entity_id:
+      description: The place to make the announcement
+      example: media_player.office_speaker
+
+doorbell:
+  description: The doorbell has rung. Let's tell somebody.
+
+recent_devices:
+  description: Just lists devices recently added in the log

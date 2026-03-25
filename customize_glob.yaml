@@ -1,0 +1,11 @@
+sensor.*_collection:
+  templates:
+    icon_color: >
+      if (state == '1') return 'orange';
+      if (state == '0') return 'red';
+input_select.clean*:
+  templates:
+    icon_color: >
+      if (state == 'selected') return 'green';
+      if (state == 'cleaning') return 'blue';
+      if (state == 'disabled') return 'gray';

@@ -1,0 +1,19 @@
+{
+    "args": {
+        "brightness": 100,
+        "candles": "all",
+        "color": [
+            255,
+            138,
+            0
+        ],
+        "colorShift": 1,
+        "ledlist": "1,11,21",
+        "sleepTime": 0.15,
+        "smoothing-custom-settings": false,
+        "smoothing-time_ms": 200,
+        "smoothing-updateFrequency": 25
+    },
+    "name": "My Modded Effect",
+    "script": ":/effects/candle.py"
+}

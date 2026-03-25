@@ -1,0 +1,145 @@
+people:
+  name: People
+  entities:
+    - person.mon
+    - person.chris
+    - person.valerie
+    - person.wesley
+    - person.amanda
+    - person.angus
+    - person.andy
+    - person.bill
+    - person.brian
+    - person.cameron
+    - person.frances
+    - person.lauren
+    - person.madeleine
+    - person.sabrina
+    - person.yin_lay
+    - person.than_htay
+    - person.lisa
+    - person.jake
+    - person.kye
+  icon: mdi:account-multiple
+
+parents:
+  name: Parents
+  entities:
+    - person.mon
+    - person.chris
+  icon: mdi:human-male-female
+
+residents:
+  name: Residents
+  entities:
+    - person.mon
+    - person.chris
+    - person.valerie
+    - person.wesley
+  icon: mdi:home-heart  
+
+switches:
+  name: Switches
+  entities:
+    - switch.bedroom_heater
+    - switch.office_heater
+    - switch.pond_lights
+    - switch.pump
+  icon: mdi:dip-switch
+  
+lights:
+  name: Lights
+  entities:
+    - switch.pond_lights
+    - light.hallway_light
+    - light.deck_light_1
+    - light.deck_light_2
+    - light.deck_light_3
+    - light.deck_light_4
+    - light.foyer
+    - light.master_bedroom_light
+    - light.valeries
+    - light.upstairs
+    - light.downstairs
+    - light.office
+    - light.wled
+    - light.tv_lights
+    - light.living_room_downlight_1
+    - light.living_room_downlight_2
+    - light.living_room_downlight_3
+    - light.living_room_downlight_4
+    - light.living_room_downlight_5
+    - light.living_room_downlight_6
+    - light.table_1
+    - light.table_2
+    - light.table_3
+    - light.table_4
+  icon: mdi:lightbulb-group
+  
+water:
+  name: Water
+  entities:
+    - binary_sensor.popup_station_running
+    - binary_sensor.plugged_station_running
+    - binary_sensor.veggie_patch_station_running
+    - binary_sensor.tap_station_running
+  icon: mdi:water
+  
+deck_lights:
+  name: Deck Lights
+  entities:
+    - light.deck_light_1
+    - light.deck_light_2
+    - light.deck_light_3
+    - light.deck_light_4
+  icon: mdi:led-strip    
+
+living_room_lights:
+  name: Living Room Lights
+  entities:
+    - light.living_room_downlight_1
+    - light.living_room_downlight_2
+    - light.living_room_downlight_3
+    - light.living_room_downlight_4
+    - light.living_room_downlight_5
+    - light.living_room_downlight_6
+  icon: mdi:light-recessed
+
+upstairs_lights:
+  name: Upstairs Lights
+  entities:
+    - light.upstairs
+    - light.foyer
+
+table_lights:
+  name: Table Lights
+  entities:
+    - light.table_1
+    - light.table_2
+    - light.table_3
+    - light.table_4
+  icon: mdi:light-recessed
+
+cooking_lights:
+  name: Cooking Lights
+  entities:
+    - light.cooking_1
+    - light.cooking_2
+    - light.cooking_3
+    - light.cooking_4
+    - light.cooking_5
+  icon: mdi:light-recessed
+
+kitchen_lights:
+  name: Kitchen Lights
+  entities:
+    - light.table_1
+    - light.table_2
+    - light.table_3
+    - light.table_4
+    - light.cooking_1
+    - light.cooking_2
+    - light.cooking_3
+    - light.cooking_4
+    - light.cooking_5    
+  icon: mdi:light-recessed

@@ -1,0 +1,176 @@
+switch.power:
+  icon: mdi:power
+switch.speakers_vol_up:
+  icon: mdi:volume-plus
+switch.speakers_vol_down:
+  icon: mdi:volume-minus
+switch.flux:
+  icon: mdi:theme-light-dark
+sensor.washer:
+  templates:
+    icon_color: 'if (state == ''on'') return ''orange'';
+
+      '
+sensor.aarlo_temperature_baby_monitor:
+  templates:
+    icon_color: "if (state > 25) {\n      var hue = 0;\n    } else if (state < 15\
+      \ ) {\n      var hue = 250;\n    } else {\n      var hue = Math.round((25 -\
+      \ Number(state))/10*250);\n    }\nreturn 'hsl(' + hue + ',80%,50%)';    \n"
+sensor.wesley_motion_temperature:
+  templates:
+    icon_color: "if (state > 25) {\n      var hue = 0;\n    } else if (state < 15\
+      \ ) {\n      var hue = 250;\n    } else {\n      var hue = Math.round((25 -\
+      \ Number(state))/10*250);\n    }\nreturn 'hsl(' + hue + ',80%,50%)';    \n" 
+input_select.clean_kitchen:
+  number: 21
+  altnames: kitchen,dining,eating,cooking,main,night
+input_select.clean_living_room:
+  number: 16
+  altnames: living,lounge,tv,main,night
+input_select.clean_master:
+  number: 1
+  altnames: master,bruces,all bedrooms
+input_select.clean_bathroom:
+  number: 2
+  altnames: bathroom,bath,toilet
+input_select.clean_guest:
+  number: 5
+  altnames: guest,all bedrooms,feeding,small
+input_select.clean_corner_bedroom:
+  number: 20
+  altnames: corner,all bedrooms,valerie,nursery
+input_select.clean_family:
+  number: 22
+  altnames: family,buddha,play
+input_select.clean_hallways:
+  number: 23
+  altnames: hallways,entrance
+light.deck:
+  icon: mdi:led-strip
+light.deck_light_1:
+  icon: mdi:led-strip
+light.deck_light_2:
+  icon: mdi:led-strip
+light.deck_light_3:
+  icon: mdi:led-strip
+light.deck_light_4:
+  icon: mdi:led-strip
+switch.pond_lights:
+  icon: mdi:string-lights
+
+person.chris:
+  nicknames:
+    - Chris
+    - Daddy
+    - Big Kahuna
+    - Remedial
+    - Dad
+  burmese_name: ခရစ်
+ 
+person.mon:
+  nicknames:
+    - Mon
+    - Monny
+    - Mum
+    - Mummy
+    - M Cutie
+    - MCube
+  burmese_name: မွန်
+ 
+person.valerie:
+  nicknames:
+    - Val
+    - Valerina
+  burmese_name: ဗယ်လရီ
+ 
+person.wesley:
+  nicknames:
+    - Wes
+  burmese_name: ဝက်စ်လီ
+ 
+person.amanda:
+  burmese_name: အမန်ဒါ
+ 
+person.angus:
+  burmese_name: အန်းဂပ်စ်
+ 
+person.andy:
+  nicknames:
+    - Andrew
+    - Andrew Robert Wright
+  burmese_name: အန်ဒီ
+ 
+person.bill:
+  nicknames:
+    - William
+    - Billy Boy
+    - Billy
+    - Bilbo Baggins
+    - Uncle Bill
+  burmese_name: ဘစ်လ်
+ 
+person.brian:
+  nicknames:
+    - Gee Pa
+    - Paaaaaaaaaaaaaaa
+    - Beautiful Man
+  burmese_name: ဘရိုင်ယန်
+ 
+person.cameron:
+  burmese_name: ကင်မရွန်
+ 
+person.frances:
+  nicknames:
+    - Granny Franny
+    - Gee Ma
+  burmese_name: ဖရန်စစ်
+ 
+person.lauren:
+  nicknames:
+    - Lozza
+  burmese_name: လော်ရင်
+ 
+person.madeleine:
+  burmese_name: မက်ဒလင်
+ 
+person.sabrina:
+  burmese_name: ဆာဘရီနာ
+ 
+person.yin_lay:
+  nicknames:
+    - Jet Ja
+  burmese_name: ရင်လေး
+ 
+person.than_htay:
+  nicknames:
+    - An Gong
+  burmese_name: သန်းထေး
+ 
+person.lisa:
+  nicknames:
+    - Lease
+    - Big Elle
+    - Leasey Peasy
+  burmese_name: လီဆာ
+ 
+person.jake:
+  nicknames:
+    - Jake
+  burmese_name: ဂျိတ်
+ 
+person.kye:
+  nicknames:
+    - Kylie
+    - Duffy
+    - The Duffmeister
+  burmese_name: ကိုင်
+
+  
+
+# Power units of measure
+sensor.solaredge_consumption_energy:
+  unit_of_measurement: Wh
+sensor.solaredge_exported_energy:
+  unit_of_measurement: Wh
+sensor.solaredge_production_energy:
+  unit_of_measurement: Wh

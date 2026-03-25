@@ -1,0 +1,282 @@
+# Automation Watchdog Package
+# Add to configuration.yaml: packages: watchdog: !include packages/watchdog.yaml
+# Or paste each section into the appropriate file
+
+# ─────────────────────────────────────────────
+# INPUT NUMBERS — staleness thresholds (days)
+# Adjust these to tune sensitivity
+# ─────────────────────────────────────────────
+input_number:
+  watchdog_high_freq_days:
+    name: "Watchdog: High frequency alert threshold"
+    min: 1
+    max: 30
+    step: 1
+    initial: 7
+    unit_of_measurement: days
+    icon: mdi:clock-alert
+
+  watchdog_low_freq_days:
+    name: "Watchdog: Low frequency alert threshold"
+    min: 30
+    max: 365
+    step: 1
+    initial: 90
+    unit_of_measurement: days
+    icon: mdi:clock-alert-outline
+
+# ─────────────────────────────────────────────
+# TEMPLATE SENSORS
+# One sensor per watched automation
+# state = 'ok', 'stale', or 'never'
+# ─────────────────────────────────────────────
+template:
+  - sensor:
+
+    # ── HIGH FREQUENCY ──────────────────────
+    # These should fire at least weekly.
+    # Alert after watchdog_high_freq_days.
+
+    - name: "Watchdog: Set theme sunset"
+      unique_id: watchdog_set_theme_sunset
+      icon: mdi:theme-light-dark
+      state: >
+        {% set last = state_attr('automation.set_theme_when_the_sun_is_set', 'last_triggered') %}
+        {% if last == None %}never
+        {% elif (now() - last.replace(tzinfo=now().tzinfo)).days > states('input_number.watchdog_high_freq_days') | int %}stale
+        {% else %}ok{% endif %}
+
+    - name: "Watchdog: Set theme sunrise"
+      unique_id: watchdog_set_theme_sunrise
+      icon: mdi:theme-light-dark
+      state: >
+        {% set last = state_attr('automation.set_theme_when_the_sun_rises', 'last_triggered') %}
+        {% if last == None %}never
+        {% elif (now() - last.replace(tzinfo=now().tzinfo)).days > states('input_number.watchdog_high_freq_days') | int %}stale
+        {% else %}ok{% endif %}
+
+    - name: "Watchdog: Purge history"
+      unique_id: watchdog_purge_history
+      icon: mdi:database-clock
+      state: >
+        {% set last = state_attr('automation.regularly_purge_history', 'last_triggered') %}
+        {% if last == None %}never
+        {% elif (now() - last.replace(tzinfo=now().tzinfo)).days > states('input_number.watchdog_high_freq_days') | int %}stale
+        {% else %}ok{% endif %}
+
+    - name: "Watchdog: Reset bedtime check"
+      unique_id: watchdog_reset_bedtime
+      icon: mdi:bed-clock
+      state: >
+        {% set last = state_attr('automation.reset_bedtime_check_at_sunrise', 'last_triggered') %}
+        {% if last == None %}never
+        {% elif (now() - last.replace(tzinfo=now().tzinfo)).days > states('input_number.watchdog_high_freq_days') | int %}stale
+        {% else %}ok{% endif %}
+
+    - name: "Watchdog: Anyone arrives home"
+      unique_id: watchdog_anyone_arrives
+      icon: mdi:home-import-outline
+      state: >
+        {% set last = state_attr('automation.announcement_anyone_arrives_home', 'last_triggered') %}
+        {% if last == None %}never
+        {% elif (now() - last.replace(tzinfo=now().tzinfo)).days > states('input_number.watchdog_high_freq_days') | int %}stale
+        {% else %}ok{% endif %}
+
+    - name: "Watchdog: Anyone leaves home"
+      unique_id: watchdog_anyone_leaves
+      icon: mdi:home-export-outline
+      state: >
+        {% set last = state_attr('automation.announcement_anyone_leaves_home', 'last_triggered') %}
+        {% if last == None %}never
+        {% elif (now() - last.replace(tzinfo=now().tzinfo)).days > states('input_number.watchdog_high_freq_days') | int %}stale
+        {% else %}ok{% endif %}
+
+    - name: "Watchdog: Turn on car charger"
+      unique_id: watchdog_car_charger_on
+      icon: mdi:car-electric
+      state: >
+        {% set last = state_attr('automation.turn_on_car_charger', 'last_triggered') %}
+        {% if last == None %}never
+        {% elif (now() - last.replace(tzinfo=now().tzinfo)).days > states('input_number.watchdog_high_freq_days') | int %}stale
+        {% else %}ok{% endif %}
+
+    - name: "Watchdog: Turn off car charger"
+      unique_id: watchdog_car_charger_off
+      icon: mdi:car-electric-outline
+      state: >
+        {% set last = state_attr('automation.turn_off_car_charger', 'last_triggered') %}
+        {% if last == None %}never
+        {% elif (now() - last.replace(tzinfo=now().tzinfo)).days > states('input_number.watchdog_high_freq_days') | int %}stale
+        {% else %}ok{% endif %}
+
+    - name: "Watchdog: Dehumidifier power on"
+      unique_id: watchdog_dehumidifier_on
+      icon: mdi:air-humidifier
+      state: >
+        {% set last = state_attr('automation.turn_on_dehumidifier_if_theres_enough_power', 'last_triggered') %}
+        {% if last == None %}never
+        {% elif (now() - last.replace(tzinfo=now().tzinfo)).days > states('input_number.watchdog_high_freq_days') | int %}stale
+        {% else %}ok{% endif %}
+
+    - name: "Watchdog: Dehumidifier power off"
+      unique_id: watchdog_dehumidifier_off
+      icon: mdi:air-humidifier-off
+      state: >
+        {% set last = state_attr('automation.turn_off_dehumidifier_if_not_enough_power', 'last_triggered') %}
+        {% if last == None %}never
+        {% elif (now() - last.replace(tzinfo=now().tzinfo)).days > states('input_number.watchdog_high_freq_days') | int %}stale
+        {% else %}ok{% endif %}
+
+    - name: "Watchdog: Solar excess power"
+      unique_id: watchdog_solar_excess
+      icon: mdi:solar-power
+      state: >
+        {% set last = state_attr('automation.power_excess_power_in_the_house', 'last_triggered') %}
+        {% if last == None %}never
+        {% elif (now() - last.replace(tzinfo=now().tzinfo)).days > states('input_number.watchdog_high_freq_days') | int %}stale
+        {% else %}ok{% endif %}
+
+    - name: "Watchdog: Run taps daily"
+      unique_id: watchdog_run_taps
+      icon: mdi:water-pump
+      state: >
+        {% set last = state_attr('automation.run_taps_for_1_minute_a_day', 'last_triggered') %}
+        {% if last == None %}never
+        {% elif (now() - last.replace(tzinfo=now().tzinfo)).days > states('input_number.watchdog_high_freq_days') | int %}stale
+        {% else %}ok{% endif %}
+
+    - name: "Watchdog: Washing complete"
+      unique_id: watchdog_washing_complete
+      icon: mdi:washing-machine
+      state: >
+        {% set last = state_attr('automation.announcement_washing_complete', 'last_triggered') %}
+        {% if last == None %}never
+        {% elif (now() - last.replace(tzinfo=now().tzinfo)).days > 30 %}stale
+        {% else %}ok{% endif %}
+
+    - name: "Watchdog: Frigate person alert (Chris)"
+      unique_id: watchdog_frigate_chris
+      icon: mdi:cctv
+      state: >
+        {% set last = state_attr('automation.let_me_know_when_there_s_a_thing', 'last_triggered') %}
+        {% if last == None %}never
+        {% elif (now() - last.replace(tzinfo=now().tzinfo)).days > states('input_number.watchdog_high_freq_days') | int %}stale
+        {% else %}ok{% endif %}
+
+    # ── LOW FREQUENCY ───────────────────────
+    # These fire rarely by design.
+    # Alert after watchdog_low_freq_days.
+
+    - name: "Watchdog: Fridge door check"
+      unique_id: watchdog_fridge_door
+      icon: mdi:fridge-alert
+      state: >
+        {% set last = state_attr('automation.make_sure_the_fridge_door_gets_closed', 'last_triggered') %}
+        {% if last == None %}never
+        {% elif (now() - last.replace(tzinfo=now().tzinfo)).days > states('input_number.watchdog_low_freq_days') | int %}stale
+        {% else %}ok{% endif %}
+
+    - name: "Watchdog: Freezer door check"
+      unique_id: watchdog_freezer_door
+      icon: mdi:fridge-alert-outline
+      state: >
+        {% set last = state_attr('automation.stop_the_freezer_door_from_being_left_open', 'last_triggered') %}
+        {% if last == None %}never
+        {% elif (now() - last.replace(tzinfo=now().tzinfo)).days > states('input_number.watchdog_low_freq_days') | int %}stale
+        {% else %}ok{% endif %}
+
+    - name: "Watchdog: Front door check"
+      unique_id: watchdog_front_door
+      icon: mdi:door-alert
+      state: >
+        {% set last = state_attr('automation.make_sure_the_front_door_gets_closed', 'last_triggered') %}
+        {% if last == None %}never
+        {% elif (now() - last.replace(tzinfo=now().tzinfo)).days > states('input_number.watchdog_low_freq_days') | int %}stale
+        {% else %}ok{% endif %}
+
+    - name: "Watchdog: Dehumidifier water full"
+      unique_id: watchdog_dehumidifier_water
+      icon: mdi:cup-water
+      state: >
+        {% set last = state_attr('automation.notify_when_the_dehumidifier_water_is_full', 'last_triggered') %}
+        {% if last == None %}never
+        {% elif (now() - last.replace(tzinfo=now().tzinfo)).days > states('input_number.watchdog_low_freq_days') | int %}stale
+        {% else %}ok{% endif %}
+
+    - name: "Watchdog: Temperature guard"
+      unique_id: watchdog_temp_guard
+      icon: mdi:thermometer-alert
+      state: >
+        {% set last = state_attr('automation.fuck_you_myat_mon_stop_changing_the_temperature', 'last_triggered') %}
+        {% if last == None %}never
+        {% elif (now() - last.replace(tzinfo=now().tzinfo)).days > states('input_number.watchdog_low_freq_days') | int %}stale
+        {% else %}ok{% endif %}
+
+    - name: "Watchdog: No TV for Valerie"
+      unique_id: watchdog_no_tv_valerie
+      icon: mdi:television-off
+      state: >
+        {% set last = state_attr('automation.no_tv_for_valerie_in_the_morning', 'last_triggered') %}
+        {% if last == None %}never
+        {% elif (now() - last.replace(tzinfo=now().tzinfo)).days > states('input_number.watchdog_low_freq_days') | int %}stale
+        {% else %}ok{% endif %}
+
+    # ── SUMMARY SENSOR ──────────────────────
+    # Single sensor you can put on a dashboard
+    # or use as a notification trigger
+
+    - name: "Watchdog: Summary"
+      unique_id: watchdog_summary
+      icon: >
+        {% if states | selectattr('entity_id', 'search', 'sensor.watchdog_') | selectattr('state', 'in', ['stale', 'never']) | list | count > 0 %}
+          mdi:alert-circle
+        {% else %}
+          mdi:check-circle
+        {% endif %}
+      state: >
+        {% set issues = states | selectattr('entity_id', 'search', 'sensor.watchdog_')
+           | selectattr('state', 'in', ['stale', 'never'])
+           | list %}
+        {% if issues | count == 0 %}ok
+        {% else %}{{ issues | count }} issue{{ 's' if issues | count > 1 }}{% endif %}
+      attributes:
+        never_triggered: >
+          {{ states | selectattr('entity_id', 'search', 'sensor.watchdog_')
+             | selectattr('state', 'eq', 'never')
+             | map(attribute='name') | list }}
+        stale: >
+          {{ states | selectattr('entity_id', 'search', 'sensor.watchdog_')
+             | selectattr('state', 'eq', 'stale')
+             | map(attribute='name') | list }}
+        ok_count: >
+          {{ states | selectattr('entity_id', 'search', 'sensor.watchdog_')
+             | selectattr('state', 'eq', 'ok')
+             | list | count }}
+
+# ─────────────────────────────────────────────
+# AUTOMATION — daily notification if issues found
+# Fires at 9am, only notifies if there are problems
+# ─────────────────────────────────────────────
+automation:
+  - id: watchdog_daily_report
+    alias: "System: Automation watchdog daily report"
+    description: "Notify Chris if any automations are stale or have never triggered"
+    triggers:
+      - trigger: time
+        at: "09:00:00"
+    conditions:
+      - condition: template
+        value_template: "{{ states('sensor.watchdog_summary') != 'ok' }}"
+    actions:
+      - action: notify.mobile_app_pixel_9_pro_xl
+        data:
+          title: "🔧 Automation health: {{ states('sensor.watchdog_summary') }}"
+          message: >
+            {% set never = state_attr('sensor.watchdog_summary', 'never_triggered') %}
+            {% set stale = state_attr('sensor.watchdog_summary', 'stale') %}
+            {% if never | count > 0 %}Never triggered: {{ never | join(', ') | replace('Watchdog: ', '') }}.{% endif %}
+            {% if stale | count > 0 %} Stale: {{ stale | join(', ') | replace('Watchdog: ', '') }}.{% endif %}
+          data:
+            url: /config/automation
+            tag: watchdog_report
+            sticky: false

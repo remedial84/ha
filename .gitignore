@@ -1,0 +1,44 @@
+.google.token
+client_secret_213674934335-5jciimeigstgu1hfsm40dst040k76j1j.apps.googleusercontent.com.json
+config_backup.tar.gz
+*.db
+*.db-shm
+*.db-wal
+secrets.yaml
+SERVICE_ACCOUNT.JSON
+google_cloud.json
+Untitled-1.txt
+tts/
+custom_components/
+.cache/
+.storage/auth.session
+sabnzbd.conf
+.storage/application_credentials
+.storage/auth_provider.homeassistant
+.storage/
+.cloud/
+*.db-wal
+
+# Databases and Logs
+*.db
+*.db-shm
+*.db-wal
+*.log
+*.log.*
+
+# Folders to Ignore
+.storage/
+.cloud/
+backups/
+media/
+tts/
+image_cache/
+downloads/
+www/
+
+# Sensitive Data (VERY IMPORTANT)
+secrets.yaml
+
+# OS files
+.DS_Store
+Thumbs.db

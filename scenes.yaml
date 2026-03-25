@@ -1,0 +1,56 @@
+- id: '1636693168483'
+  name: Valeires Asleep
+  entities:
+    light.upstairs:
+      supported_color_modes:
+      - brightness
+      friendly_name: Upstairs
+      supported_features: 40
+      mode: normal
+      dynamics: none
+      state: 'off'
+    light.downstairs:
+      supported_color_modes:
+      - brightness
+      friendly_name: Downstairs
+      supported_features: 40
+      mode: normal
+      dynamics: none
+      color_mode: brightness
+      brightness: 254
+      state: 'on'
+    media_player.shield:
+      volume_level: 0.46666666865348816
+      is_volume_muted: false
+      media_content_id: ''
+      media_duration: 1403.403
+      media_position: 1346.604
+      media_position_updated_at: '2022-12-16T04:50:55.275478+00:00'
+      media_title: Pups Save the Songbirds
+      media_artist: Paw Patrol
+      media_album_name: Season 3
+      app_id: AndroidNativeApp
+      app_name: Plex
+      entity_picture_local:
+      friendly_name: SHIELD
+      supported_features: 152511
+      state: playing
+    light.hallway_light:
+      min_color_temp_kelvin: 2000
+      max_color_temp_kelvin: 6535
+      min_mireds: 153
+      max_mireds: 500
+      effect_list:
+      - None
+      - candle
+      - fire
+      supported_color_modes:
+      - color_temp
+      - xy
+      friendly_name: Hallway Light
+      supported_features: 44
+      mode: normal
+      dynamics: none
+      state: 'off'
+  icon: mdi:sleep
+  metadata: {}

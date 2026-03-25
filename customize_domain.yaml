@@ -1,0 +1,8 @@
+person:
+  templates:
+    entity_picture: >
+      if (state == 'home') return '/local/people/' + attributes.id + '_home.png';
+      return '/local/people/' + attributes.id + '_not_home.png';
+climate:
+  templates:
+    icon: mdi:thermometer

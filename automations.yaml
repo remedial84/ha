@@ -1,0 +1,3499 @@
+- id: '1591839879895'
+  alias: 'Presence: Notify Mon left child care — Zone exit'
+  description: ''
+  trigger:
+  - entity_id: person.mon
+    event: leave
+    platform: zone
+    zone: zone.child_care
+  condition: []
+  action:
+  - service: notify.mobile_app_mon_pixel_9_pro_fold
+    data:
+      message: You have left child care. Is Valerie in the car?
+      title: Valerie?
+  mode: single
+- id: '1591919944906'
+  alias: 'Energy: Announce excess solar — Power above 1000W'
+  description: ''
+  triggers:
+  - entity_id:
+    - sensor.solaredge_m1_ac_power
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+    above: 1000
+    trigger: numeric_state
+  conditions: []
+  actions:
+  - data: {}
+    entity_id: media_player.mini_speakers
+    action: media_player.turn_on
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 500
+  - data:
+      media_content_id: http://192.168.14.77:8123/local/sounds/power-overwhelming.wav
+      media_content_type: music
+    action: media_player.play_media
+    target:
+      entity_id: media_player.mini_speakers
+  mode: single
+- id: '1592186161573'
+  alias: 'Household: Announce washing done — Cycle complete'
+  description: ''
+  triggers:
+  - entity_id:
+    - binary_sensor.washer_run_completed
+    from:
+    - 'off'
+    trigger: state
+  conditions: []
+  actions:
+  - action: script.household_announce_washing_done
+  mode: single
+- id: '1592369797333'
+  alias: 'Household: Remind rubbish night — Shield playing after sunset'
+  description: Notify me to take out the rubbish when watching TV on Wednesday Nights
+  trigger:
+  - entity_id:
+    - media_player.shield
+    from: idle
+    platform: state
+    to: playing
+  condition:
+  - after: sunset
+    condition: sun
+  - condition: state
+    entity_id: sensor.garbage_collection
+    state: '1'
+  - condition: state
+    entity_id: input_boolean.rubbishnotified
+    state: 'off'
+  action:
+  - data_template:
+      cache: false
+      message: 'Rubbish {% if is_state(''sensor.recycling'', ''1'') %}  and recycling
+        {% endif %} {% if is_state(''sensor.green_waste'', ''1'') %} and green waste
+        {% endif %} night.
+
+        '
+    entity_id: media_player.mini_speakers
+    service: tts.google_translate_say
+  - data: {}
+    entity_id: input_boolean.rubbishnotified
+    service: input_boolean.turn_on
+- id: '1592372446183'
+  alias: 'Household: Reset rubbish notified — Day after collection'
+  description: ''
+  trigger:
+  - event: sunset
+    platform: sun
+  condition:
+  - condition: state
+    entity_id: sensor.garbage_collection
+    state: '0'
+  action:
+  - entity_id: input_boolean.rubbishnotified
+    service: input_boolean.turn_off
+- id: '1593402323712'
+  alias: Stop Chris watching TV
+  description: Give Mon a button to stop the TV
+  trigger:
+  - entity_id: media_player.living_room_kodi
+    from: idle
+    platform: state
+    to: playing
+  condition:
+  - after: '9:00'
+    before: '17:00'
+    condition: time
+    weekday:
+    - mon
+    - tue
+    - wed
+    - thu
+    - fri
+  - condition: state
+    entity_id: person.chris
+    state: home
+  action:
+  - data_template:
+      data:
+        actions:
+        - action: stop tv
+          title: Stop Him!
+        - action: allow tv
+          title: Allow it, this time
+        image: https://remedial.synology.me:8124{{states.media_player.living_room_kodi.attributes.entity_picture}}
+        tag: stoptv
+      message: Chris is watching {% if states.media_player.living_room_kodi.attributes.media_content_type
+        == "tvshow" %} {{states.media_player.living_room_kodi.attributes.media_series_title}}
+        {% else %} {{states.media_player.living_room_kodi.attributes.media_title}}
+        {% endif %} during work hours. You might want to stop him.
+      title: Chris watching TV. What to do?
+    service: notify.mobile_app_mon_pixel_9_pro_fold
+  mode: single
+- id: '1593511006745'
+  alias: 'System: Set dark theme — Sunset'
+  description: ''
+  trigger:
+  - event: sunset
+    platform: sun
+  condition: []
+  action:
+  - data:
+      mode: dark
+    service: frontend.set_theme
+- id: '1593511098814'
+  alias: 'System: Set light theme — Sunrise'
+  description: ''
+  trigger:
+  - event: sunrise
+    platform: sun
+  condition: []
+  action:
+  - data:
+      mode: light
+      name: default
+    service: frontend.set_theme
+- id: '1594084251662'
+  alias: 'Security: Play fire alarm music — Nest Protect triggered'
+  description: ''
+  trigger:
+  - entity_id: binary_sensor.nest_protect_family_room_smoke_status
+    from: 'off'
+    platform: state
+  - entity_id: binary_sensor.nest_protect_hallway_smoke_status
+    from: 'off'
+    platform: state
+  - entity_id: binary_sensor.nest_protect_master_bedroom_smoke_status
+    from: 'off'
+    platform: state
+  - entity_id: binary_sensor.nest_protect_stairwell_smoke_status
+    from: 'off'
+    platform: state
+  condition: []
+  action:
+  - data:
+      entity_id: media_player.mini_speakers
+      uri: spotify:track:3Cx4yrFaX8CeHwBMReOWXI
+      start_volume: 92
+    service: spotcast.start
+- id: '1594873492885'
+  alias: 'Household: Disable room selection — Rosey started'
+  description: ''
+  trigger:
+  - entity_id: vacuum.xiaomi_vacuum_cleaner
+    from: docked
+    platform: state
+  condition: []
+  action:
+  - data: {}
+    service: python_script.disable_rooms
+- id: '1594873558264'
+  alias: 'Household: Enable room selection — Rosey docked'
+  description: ''
+  trigger:
+  - entity_id: vacuum.xiaomi_vacuum_cleaner
+    platform: state
+    to: docked
+  condition: []
+  action:
+  - data: {}
+    service: python_script.enable_rooms
+- id: '1598312344868'
+  alias: 'Presence: Check things left on — Everyone left home'
+  description: ''
+  triggers:
+  - entity_id: group.people
+    from: home
+    trigger: state
+  conditions: []
+  actions:
+  - action: script.household_check_things_left_on
+    data:
+      reason: Everyone left home
+  mode: single
+- id: '1598312516431'
+  alias: 'Household: Turn all off — Mobile action'
+  description: ''
+  trigger:
+  - event_data:
+      action: turnoff
+    event_type: mobile_app_notification_action
+    platform: event
+  condition: []
+  action:
+  - data: {}
+    entity_id: group.lights
+    service: light.turn_off
+  - data: {}
+    entity_id: group.switches
+    service: switch.turn_off
+  - data:
+      data:
+        tag: turnoff
+      message: clear_notification
+    service: notify.allphones
+  mode: single
+- id: '1598335973036'
+  alias: 'System: Purge history — Daily 1:30am'
+  description: Ensures only the most recent 7 days of history are recorded. Hopefully
+    fix big DB issues.
+  trigger:
+  - at: 01:32:00
+    platform: time
+  condition: []
+  action:
+  - data:
+      keep_days: 7
+      repack: true
+    service: recorder.purge
+  mode: single
+- id: '1598872710622'
+  alias: 'Household: Check things left on — Bedtime'
+  description: ''
+  triggers:
+  - entity_id:
+    - light.master_bedroom
+    from:
+    - 'on'
+    to:
+    - 'off'
+    trigger: state
+  conditions:
+  - after: '21:00:00'
+    before: 06:00:00
+    condition: time
+  - condition: state
+    entity_id: input_boolean.bedtimechecked
+    state: 'off'
+  actions:
+  - action: script.household_check_things_left_on
+    data:
+      reason: Bedtime
+  mode: queued
+  max: 10
+- id: '1598872864219'
+  alias: 'System: Reset bedtime check — Sunrise'
+  description: ''
+  trigger:
+  - event: sunrise
+    platform: sun
+  condition: []
+  action:
+  - data: {}
+    entity_id: input_boolean.bedtimechecked
+    service: input_boolean.turn_off
+  mode: single
+- id: '1598916522627'
+  alias: 'Household: Leave all on — Mobile action'
+  description: ''
+  trigger:
+  - event_data:
+      action: leaveon
+    event_type: mobile_app_notification_action
+    platform: event
+  condition: []
+  action:
+  - data:
+      data:
+        tag: turnoff
+      message: clear_notification
+    service: notify.allphones
+  - condition: and
+    conditions:
+    - condition: state
+      entity_id: input_boolean.bedtimechecked
+      state: 'off'
+    - condition: time
+      after: '21:00:00'
+      before: 04:00:00
+  - service: input_boolean.turn_on
+    data: {}
+    target:
+      entity_id:
+      - input_boolean.bedtimechecked
+  mode: single
+- id: '1598941225629'
+  alias: 'Valerie: Set away — Parents left home'
+  description: ''
+  trigger:
+  - entity_id: group.parents
+    from: home
+    platform: state
+    to: not_home
+  condition: []
+  action:
+  - data:
+      entity_id: person.valerie
+      state: not_home
+    service: python_script.set_state
+  mode: single
+- id: '1598941476960'
+  alias: 'Valerie: Set child care — Parent at child care zone'
+  description: ''
+  trigger:
+  - entity_id: person.chris
+    event: enter
+    platform: zone
+    zone: zone.child_care
+  - entity_id: person.mon
+    event: enter
+    platform: zone
+    zone: zone.child_care
+  condition:
+  - after: 00:00:00
+    before: '12:00:00'
+    condition: time
+  action:
+  - data:
+      entity_id: person.valerie
+      state: Child Care
+    service: python_script.set_state
+  mode: single
+- id: '1598941643810'
+  alias: 'Valerie: Set home — Parent left child care zone'
+  description: ''
+  trigger:
+  - entity_id: person.chris
+    event: leave
+    platform: zone
+    zone: zone.child_care
+  - entity_id: person.mon
+    event: leave
+    platform: zone
+    zone: zone.child_care
+  - entity_id: group.parents
+    from: not_home
+    platform: state
+    to: home
+  condition:
+  - after: '12:00:01'
+    before: '23:59:59'
+    condition: time
+  action:
+  - data:
+      entity_id: person.valerie
+      state: home
+    service: python_script.set_state
+  mode: single
+- id: '1598941769855'
+  alias: 'Valerie: Set home — Parents returned'
+  description: ''
+  trigger:
+  - entity_id: group.parents
+    from: not_home
+    platform: state
+    to: home
+  condition: []
+  action:
+  - data:
+      entity_id: person.valerie
+      state: home
+    service: python_script.set_state
+  mode: single
+- id: '1600402235296'
+  alias: 'Presence: Announce arrival — Person home'
+  description: ''
+  triggers:
+  - entity_id:
+    - person.chris
+    - person.mon
+    - person.valerie
+    - person.yin_lay
+    - person.than_htay
+    - person.amanda
+    - person.andy
+    - person.angus
+    - person.bill
+    - person.brian
+    - person.cameron
+    - person.frances
+    - person.lauren
+    - person.madeleine
+    - person.sabrina
+    - person.wesley
+    - person.lisa
+    - person.jake
+    - person.kye
+    to:
+    - home
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 0
+    trigger: state
+  conditions: []
+  actions:
+  - wait_for_trigger:
+    - type: opened
+      device_id: ae282a89bda2d7f09741743e193d96b0
+      entity_id: a0b3c78a1ea01bb30572e733eb5f69fa
+      domain: binary_sensor
+      trigger: device
+    timeout:
+      hours: 0
+      minutes: 30
+      seconds: 0
+      milliseconds: 0
+    continue_on_timeout: false
+  - data:
+      direction: home
+      person: '{{ trigger.entity_id }}'
+    action: script.presence_announce_arrival_or_departure
+  mode: queued
+  max: 10
+- id: AnyoneLeavesHome
+  alias: 'Presence: Announce departure — Person left home'
+  description: ''
+  triggers:
+  - entity_id:
+    - person.chris
+    - person.mon
+    - person.valerie
+    - person.yin_lay
+    - person.than_htay
+    - person.amanda
+    - person.andy
+    - person.angus
+    - person.bill
+    - person.brian
+    - person.cameron
+    - person.frances
+    - person.lauren
+    - person.madeleine
+    - person.sabrina
+    - person.wesley
+    - person.jake
+    - person.lisa
+    - person.kye
+    from: home
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
+    trigger: state
+  conditions: []
+  actions:
+  - action: script.presence_announce_arrival_or_departure
+    data:
+      direction: away
+      person: '{{ trigger.entity_id }}'
+  mode: queued
+  max: 10
+- id: '1601445013769'
+  alias: 'Spotify: Listening'
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: media_player.spotify_remedial84
+    to: playing
+  condition: []
+  action:
+  - service: notify.twelve
+    data:
+      message: Its Music Time. Remedial is listening to {{ state_attr("media_player.spotify_remedial84",
+        "media_playlist") }} on {{ state_attr("media_player.spotify_remedial84", "source")
+        }}. https://remedial.synology.me:8124{{states.media_player.spotify_remedial84.attributes.entity_picture}}
+      target:
+      - '753490873274204211'
+      data:
+        images:
+        - https://remedial.synology.me:8124{{states.media_player.spotify_remedial84.attributes.entity_picture}}
+  mode: single
+- id: '1607404112738'
+  alias: 'Energy: Turn off car charger — Solar insufficient'
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.solaredge_grid_power
+    above: '-1'
+  condition: []
+  action:
+  - type: turn_off
+    device_id: 50bcb8619bd2b2fd3da18d5d81968273
+    entity_id: switch.charger
+    domain: switch
+  mode: single
+- id: '1610769189916'
+  alias: 'Household: Turn on pump — Irrigation running'
+  description: ''
+  triggers:
+  - entity_id: group.water
+    from: 'off'
+    to: 'on'
+    trigger: state
+  - trigger: state
+    entity_id:
+    - binary_sensor.popup_station_running
+  conditions: []
+  actions:
+  - type: turn_on
+    device_id: 6b9beb1746332598284730bf43dbee3b
+    entity_id: switch.pump
+    domain: switch
+  mode: single
+- id: '1610769268760'
+  alias: 'Household: Turn off pump — Irrigation stopped'
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: group.water
+    from: 'on'
+    to: 'off'
+  condition: []
+  action:
+  - type: turn_off
+    device_id: 6b9beb1746332598284730bf43dbee3b
+    entity_id: switch.pump
+    domain: switch
+  mode: single
+- id: '1625812889702'
+  alias: 'System: Notify new device — Device tracker added'
+  description: ''
+  trigger:
+  - platform: event
+    event_type: device_tracker_new_device
+  condition: []
+  action:
+  - service: notify.mobile_app_pixel_9_pro_xl
+    data:
+      title: New device
+      message: 'New device: {{trigger.event.data.host_name}} ({{trigger.event.data.entity_id}})
+        Mac: {{trigger.event.data.mac}}
+
+        '
+      data:
+        actions:
+        - action: BlockDevice
+          title: Block Device
+        - action: AddNewPerson
+          title: Add New Person
+        - action: AddToPerson
+          title: Add To Person
+  mode: single
+- id: '1636673031667'
+  alias: 'Lighting: Upstairs on — Motion detected'
+  description: Upstairs Light with motion detection
+  use_blueprint:
+    path: homeassistant/motion_light.yaml
+    input:
+      motion_entity: binary_sensor.upstairs_motion
+      light_target:
+        entity_id:
+        - light.hallway_3
+        - light.upstairs
+        - light.hallway_4
+- id: '1636673464530'
+  alias: 'Lighting: Downstairs on — Motion detected'
+  description: ''
+  use_blueprint:
+    path: freakshock88/motion_illuminance_activated_entity.yaml
+    input:
+      motion_sensor: binary_sensor.downstairs_motion
+      target_entity: light.stair_bottom_lights
+      illuminance_sensor: sensor.downstairs_motion_illuminance
+      illuminance_cutoff: input_number.bright_enough
+      no_motion_wait: input_number.lights_off
+      blocker_entity: input_boolean.motion_sensors
+- id: '1637036213791'
+  alias: 'Security: Announce mail — Mailbox motion'
+  description: Do something wwhen mail arrives
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.mailbox_motion
+    from: 'off'
+    to: 'on'
+  condition:
+  - condition: state
+    entity_id: input_boolean.mail
+    state: 'off'
+  action:
+  - data:
+      media_content_id: http://192.168.14.130:8123/local/sounds/mail.wav
+      media_content_type: music
+    service: media_player.play_media
+    target:
+      entity_id: media_player.mini_speakers
+  - service: notify.allphones
+    data:
+      title: Mail
+      message: You've got mail!
+  - service: input_boolean.turn_on
+    target:
+      entity_id: input_boolean.mail
+  - wait_for_trigger:
+    - platform: state
+      entity_id: binary_sensor.mailbox_motion
+      from: 'off'
+      to: 'on'
+    continue_on_timeout: false
+  - wait_for_trigger:
+    - platform: numeric_state
+      entity_id: sensor.mailbox_light_level
+      above: '30'
+    continue_on_timeout: false
+  - service: input_boolean.turn_off
+    target:
+      entity_id: input_boolean.mail
+  mode: single
+- id: '1637301494537'
+  alias: 'Lighting: Storage on — Motion detected'
+  description: ''
+  use_blueprint:
+    path: freakshock88/motion_illuminance_activated_entity.yaml
+    input:
+      motion_sensor: binary_sensor.storage_motion
+      target_entity: light.storage
+      no_motion_wait: input_number.lights_off
+- id: '1662620121577'
+  alias: 'Household: Record Mon weight — Scale reading 40-60kg'
+  description: ''
+  triggers:
+  - entity_id:
+    - sensor.ble_stabilized_weight_5ccad37be54d
+    trigger: state
+  conditions:
+  - condition: numeric_state
+    entity_id: sensor.ble_weight
+    above: 40
+    below: 60
+  actions:
+  - data:
+      value: '{{ trigger.to_state.state|float }}'
+    target:
+      entity_id: input_number.mon_weight
+    action: input_number.set_value
+  mode: single
+- id: '1662620371577'
+  alias: 'Household: Record Chris weight — Scale reading 70-100kg'
+  description: ''
+  triggers:
+  - entity_id:
+    - sensor.ble_stabilized_weight_5ccad37be54d
+    trigger: state
+  conditions:
+  - condition: numeric_state
+    entity_id: sensor.ble_weight
+    above: 70
+    below: 100
+  actions:
+  - data:
+      value: '{{ trigger.to_state.state|float }}'
+    target:
+      entity_id: input_number.chris_weight
+    action: input_number.set_value
+  mode: single
+- id: '1662620917463'
+  alias: 'Household: Announce weight change — Input number updated'
+  description: Announce who got fatter
+  trigger:
+  - platform: state
+    entity_id:
+    - input_number.mon_weight
+    id: Mon
+  - platform: state
+    entity_id:
+    - input_number.chris_weight
+    id: Chris
+  condition: []
+  action:
+  - service: notify.allphones
+    data:
+      title: '{{ trigger.id }} Fat?'
+      message: 'The weight of {{ trigger.id }} has gone {% if trigger.to_state.state|float
+        > trigger.from_state.state|float %}up{% else %}down{% endif %} to {{ trigger.to_state.state
+        }}kg
+
+        '
+  - service: tts.google_cloud_say
+    data:
+      entity_id: media_player.mini_speakers
+      message: 'The weight of {{ trigger.id }} has gone {% if trigger.to_state.state|float
+        > trigger.from_state.state|float %}up{% else %}down{% endif %} to {{ trigger.to_state.state
+        }}kg.  {% if trigger.to_state.state|float > trigger.from_state.state|float
+        %}Maybe eat less junk food fatty.{% else %}Good work! Keep it up!{% endif
+        %}
+
+        '
+  mode: single
+- id: '1672983261744'
+  alias: 'Energy: Turn off dehumidifier — Solar insufficient'
+  description: ''
+  triggers:
+  - entity_id:
+    - sensor.solaredge_i1_m1_ac_power
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+    below: 0
+    trigger: numeric_state
+  conditions: []
+  actions:
+  - type: turn_off
+    device_id: f85c017a62d8e77ee055efed3baa1be7
+    entity_id: switch.dehumidifier
+    domain: switch
+  mode: single
+- id: '1672983296755'
+  alias: 'Energy: Turn on dehumidifier — Solar sufficient'
+  description: ''
+  triggers:
+  - entity_id:
+    - sensor.solaredge_i1_m1_ac_power
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+    above: 500
+    trigger: numeric_state
+  conditions: []
+  actions:
+  - type: turn_on
+    device_id: f85c017a62d8e77ee055efed3baa1be7
+    entity_id: switch.dehumidifier
+    domain: switch
+  mode: single
+- id: '1675310409071'
+  alias: 'Energy: Turn on car charger — Solar positive'
+  description: ''
+  triggers:
+  - entity_id:
+    - sensor.solaredge_i1_m1_ac_power
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+    above: 0
+    trigger: numeric_state
+  conditions: []
+  actions:
+  - data: {}
+    target:
+      entity_id: switch.car_charger
+    action: switch.turn_on
+  mode: single
+- id: '1675310457101'
+  alias: 'Energy: Turn off car charger — Solar insufficient'
+  description: Looks like too much power is being used now, turn it off
+  triggers:
+  - entity_id:
+    - sensor.solaredge_i1_m1_ac_power
+    trigger: numeric_state
+    below: -2000
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  conditions: []
+  actions:
+  - data: {}
+    target:
+      entity_id: switch.car_charger
+    action: switch.turn_off
+  mode: single
+- id: '1675310756950'
+  alias: 'Household: Notify dehumidifier full — Low consumption'
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.dehumidifier_current_consumption
+    below: 10
+  condition:
+  - condition: state
+    entity_id: switch.dehumidifier
+    state: 'on'
+  action:
+  - service: notify.allphones
+    data:
+      message: The dehumidifier water is probably full
+  - service: notify.google_assistant_sdk
+    data:
+      message: The dehumidifier water is probably full
+      target: mini
+  mode: single
+- id: '1676428445706'
+  alias: 'Media: Dim lights — TV playing after 8:30pm'
+  description: ''
+  triggers:
+  - entity_id:
+    - media_player.shield
+    - media_player.shield_3
+    - media_player.plex_plex_for_android_tv_shield
+    to: playing
+    trigger: state
+  conditions:
+  - condition: state
+    entity_id: group.living_room_lights
+    state: 'on'
+  - condition: time
+    after: '20:30:00'
+    before: 05:00:00
+  actions:
+  - data:
+      transition: 1
+    target:
+      entity_id:
+      - light.living_room_downlight_1
+      - light.living_room_downlight_2
+      - light.living_room_downlight_3
+      - light.living_room_downlight_6
+    action: light.turn_off
+  - data:
+      transition: 1
+      brightness_pct: 24
+    target:
+      entity_id:
+      - light.living_room_downlight_4
+      - light.living_room_downlight_5
+    action: light.turn_on
+  mode: single
+- id: '1676429055606'
+  alias: 'Media: Brighten lights — TV stopped after 8:30pm'
+  description: ''
+  triggers:
+  - entity_id:
+    - media_player.shield
+    - media_player.plex_plex_for_android_tv_shield
+    to: idle
+    from: playing
+    trigger: state
+  - entity_id:
+    - media_player.shield
+    from: paused
+    to: idle
+    trigger: state
+  conditions:
+  - condition: state
+    entity_id: group.living_room_lights
+    state: 'on'
+  - condition: time
+    after: '20:30:00'
+    before: 05:00:00
+  actions:
+  - data:
+      transition: 1
+    target:
+      entity_id:
+      - light.living_room_downlight_1
+      - light.living_room_downlight_2
+      - light.living_room_downlight_3
+      - light.living_room_downlight_6
+    action: light.turn_on
+  - data:
+      transition: 1
+      brightness_pct: 24
+    target:
+      entity_id:
+      - light.living_room_downlight_4
+      - light.living_room_downlight_5
+    action: light.turn_on
+  mode: single
+- id: '1676429151110'
+  alias: 'Media: Brighten lights — TV paused after 8:30pm'
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - media_player.shield
+    - media_player.shield_3
+    - media_player.plex_plex_for_android_tv_shield
+    to: paused
+    from: playing
+  condition:
+  - condition: state
+    entity_id: group.living_room_lights
+    state: 'on'
+  - condition: time
+    after: '20:30:00'
+    before: 05:00:00
+  action:
+  - data: {}
+    action: switch.turn_on
+    target:
+      entity_id: switch.adaptive_lighting_adapt_brightness_mostlights
+  mode: single
+- id: '1676429551870'
+  alias: 'Household: Run taps daily — 12pm schedule'
+  description: Hopefully this will slow the drain of water?
+  triggers:
+  - at: '12:00:00'
+    trigger: time
+  conditions: []
+  actions:
+  - data:
+      value: 1
+    action: input_number.set_value
+    target:
+      entity_id: input_number.station_run_time
+  - data: {}
+    target:
+      entity_id:
+      - switch.popups_station
+      - switch.tap_station
+    action: switch.turn_on
+  - delay:
+      hours: 0
+      minutes: 1
+      seconds: 0
+      milliseconds: 0
+  - data:
+      value: 30
+    target:
+      entity_id:
+      - input_number.station_run_time
+    action: input_number.set_value
+  mode: single
+- id: '1691112200527'
+  alias: 'Notify: Velop Information'
+  description: ''
+  triggers:
+  - event_type: linksys_velop_event
+    event_data:
+      subtype: new_device
+    id: Device Found
+    trigger: event
+  - event_type: linksys_velop_event
+    event_data:
+      subtype: new_node
+    id: Node Found
+    trigger: event
+  - event_type: linksys_velop_event
+    event_data:
+      subtype: new_primary_node
+    id: Primary Node Changed
+    trigger: event
+  - event_type: linksys_velop_event
+    event_data:
+      subtype: logging_stopped
+    id: Logging Stopped
+    trigger: event
+  conditions: []
+  actions:
+  - variables:
+      title_prefix: 'Linksys Velop - '
+  - if:
+    - condition: template
+      value_template: '{{ trigger.id in ["Logging Stopped"] }}'
+    then:
+    - variables:
+        notification_id: logging_stopped
+        message: Logging has stopped for {{ trigger.event.data.get('name') }}
+    - data:
+        notification_id: '{{ notification_id }}'
+        title: '{{ title_prefix }}{{ trigger.id }}'
+        message: '{{ message }}'
+      action: persistent_notification.create
+    else:
+    - variables:
+        notification_id: '{{ trigger.event.event_type }}_{{ trigger.event.data.get(''unique_id'')
+          or trigger.event.data.get(''serial'') }}'
+        message: "{% if trigger.event.data.get('name') is not none %}\n  ## {{ trigger.event.data.name
+          }}\n{% endif %}\n|   |   |   |\n|---|---|---| {% if trigger.event.data.get('mesh_device_id')
+          is not none %}\n|Mesh:|&emsp;|{{ device_attr(trigger.event.data.mesh_device_id,
+          'name_by_user') or device_attr(trigger.event.data.mesh_device_id, 'name')
+          }}| {% endif %} {% if trigger.event.data.get('parent_name') is not none
+          %}\n|Parent:|&emsp;|{{ trigger.event.data.parent_name }}| {% endif %} {%
+          if trigger.event.data.get('host') is not none %}\n|Host:|&emsp;|{{ trigger.event.data.host
+          }}| {% endif %} {% if trigger.event.data.get('connected_adapters') is not
+          none and trigger.event.data.get('connected_adapters') | count > 0 %}\n|Guest:|&emsp;|{{
+          'Yes' if trigger.event.data.connected_adapters[0].get('guest_network', False)
+          is eq true else 'No' }}|\n|IP:|&emsp;|{{ trigger.event.data.connected_adapters[0].get('ip',
+          'N/A') }}|\n|MAC:|&emsp;|{{ trigger.event.data.connected_adapters[0].get('mac',
+          'N/A') }}| {% endif %} {% if trigger.event.data.get('description') is not
+          none %}\n|Description:|&emsp;|{{ trigger.event.data.description }}| {% endif
+          %} {% if trigger.event.data.get('manufacturer') is not none %}\n|Manufacturer:|&emsp;|{{
+          trigger.event.data.manufacturer }}| {% endif %} {% if trigger.event.data.get('model')
+          is not none %}\n|Model:|&emsp;|{{ trigger.event.data.model }}| {% endif
+          %} {% if trigger.event.data.get('serial') is not none %}\n|Serial:|&emsp;|{{
+          trigger.event.data.serial }}| {% endif %} {% if trigger.event.data.get('operating_system')
+          is not none %}\n|Operating System:|&emsp;|{{ trigger.event.data.operating_system
+          }}| {% endif %}"
+    - data:
+        notification_id: '{{ notification_id }}'
+        title: '{{ title_prefix }}{{ trigger.id }}'
+        message: '{{ message }}'
+      action: persistent_notification.create
+    - action: notify.mobile_app_pixel_9_pro_xl
+      data: {}
+  mode: parallel
+- id: '1700646062186'
+  alias: 'Lighting: Front steps on — Motion detected'
+  description: ''
+  use_blueprint:
+    path: freakshock88/motion_illuminance_activated_entity.yaml
+    input:
+      motion_sensor: binary_sensor.front_steps_motion
+      target_entity: light.front_steps
+      illuminance_sensor: sensor.front_steps_2_illuminance
+      illuminance_cutoff: input_number.bright_enough
+      no_motion_wait: input_number.lights_off
+- id: '1708475778913'
+  alias: 'Security: Alert fridge open — Door left 2min'
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.fridge_door
+    from: 'off'
+    to: 'on'
+    for:
+      hours: 0
+      minutes: 2
+      seconds: 0
+  condition: []
+  action:
+  - service: notify.allphones
+    metadata: {}
+    data:
+      message: 'The fridge door has been left open. Stop the children and close it
+        immediately. '
+  - repeat:
+      sequence:
+      - service: notify.google_assistant_sdk
+        data:
+          target: mini
+          message: The fridge door has been left open. Close it immediately.
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 30
+          milliseconds: 0
+      until:
+      - condition: state
+        entity_id: binary_sensor.fridge_door
+        state: 'off'
+  mode: single
+- id: '1708676028310'
+  alias: 'Security: Alert freezer open — Door left 1min'
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.freezer_door
+    from: 'off'
+    to: 'on'
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
+  condition: []
+  action:
+  - service: notify.allphones
+    metadata: {}
+    data:
+      message: 'The freezer door has been left open. Stop the children and close it
+        immediately. '
+  - repeat:
+      sequence:
+      - service: notify.google_assistant_sdk
+        data:
+          target: mini
+          message: The freezer door has been left open. Close it immediately.
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 30
+          milliseconds: 0
+      until:
+      - condition: state
+        entity_id: binary_sensor.freezer_door
+        state: 'off'
+  mode: single
+- id: '1708676153783'
+  alias: 'Security: Alert front door open — Door left 5min'
+  description: ''
+  triggers:
+  - entity_id:
+    - binary_sensor.front_door
+    from: 'off'
+    to: 'on'
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+    trigger: state
+  conditions: []
+  actions:
+  - metadata: {}
+    data:
+      message: 'The front door has been left open. Stop the children and close it
+        immediately. '
+    action: notify.allphones
+  - action: tts.google_translate_say
+    metadata: {}
+    data:
+      cache: false
+      entity_id: media_player.mini_speakers
+      message: The front door is open. Save the children.
+  mode: single
+- id: '1709450927028'
+  alias: 'Climate: Undo Mon''s temperature crimes — Thermostat above 24°C'
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id:
+    - climate.living
+    - climate.office
+    - climate.higgins_moon
+    - climate.valerie
+    - climate.kitchen
+    attribute: temperature
+    above: 24
+  condition: []
+  action:
+  - if:
+    - condition: state
+      entity_id: climate.living
+      state: heat_cool
+    then:
+    - service: climate.set_temperature
+      metadata: {}
+      data:
+        temperature: 22
+      target:
+        entity_id:
+        - climate.living
+  - if:
+    - condition: state
+      entity_id: climate.valerie
+      state: heat_cool
+    then:
+    - service: climate.set_temperature
+      metadata: {}
+      data:
+        temperature: 22
+      target:
+        entity_id: climate.valerie
+  - if:
+    - condition: state
+      entity_id: climate.office
+      state: heat_cool
+    then:
+    - service: climate.set_temperature
+      metadata: {}
+      data:
+        temperature: 22
+      target:
+        entity_id: climate.office
+  - if:
+    - condition: state
+      entity_id: climate.kitchen
+      state: heat_cool
+    then:
+    - service: climate.set_temperature
+      metadata: {}
+      data:
+        temperature: 22
+      target:
+        entity_id: climate.kitchen
+  mode: single
+- id: '1718434567229'
+  alias: 'Valerie: Turn off TV — Playing before 7am'
+  description: ''
+  triggers:
+  - entity_id:
+    - media_player.shield_3
+    - media_player.shield
+    - media_player.plex_plex_for_android_tv_shield
+    - media_player.shield_2
+    to: playing
+    trigger: state
+  conditions:
+  - condition: time
+    after: 01:00:00
+    before: 07:00:00
+  actions:
+  - metadata: {}
+    data: {}
+    target:
+      entity_id:
+      - media_player.shield
+      - media_player.shield_2
+      - media_player.whitefall
+      device_id: 9f7b6666222730a2440a804416ad0f90
+    action: media_player.turn_off
+  - metadata: {}
+    data:
+      cache: true
+      entity_id: media_player.living_room_speaker
+      message: Valerie. No TV until 7am. Go back to bed.
+    action: tts.google_translate_say
+  mode: single
+- id: '1722321004525'
+  alias: 'Fun: Party lights sequence — Hallway button held'
+  description: Starting from the hallway make all the lights go on one at a time
+  trigger:
+  - device_id: 9391e1ca8fe0c3819b221825079b6947
+    domain: hue
+    platform: device
+    type: long_press
+    subtype: 1
+    unique_id: d4534ace-a24c-4ffa-bae4-48f4805eefbb
+  condition: []
+  action:
+  - service: switch.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id: switch.adaptive_lighting_downstairslights
+  - sequence:
+    - service: light.turn_on
+      metadata: {}
+      data:
+        brightness_pct: 100
+        kelvin: 5420
+      target:
+        entity_id: light.down_hallway_1
+    - service: light.turn_on
+      metadata: {}
+      data:
+        brightness_pct: 100
+        kelvin: 5420
+      target:
+        entity_id: light.down_hallway_2
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - service: light.turn_on
+      metadata: {}
+      data:
+        brightness_pct: 100
+        kelvin: 5420
+      target:
+        entity_id: light.down_hallway_3
+    - service: light.turn_on
+      metadata: {}
+      data:
+        brightness_pct: 100
+        kelvin: 5420
+      target:
+        entity_id: light.down_office_4
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - service: light.turn_on
+      metadata: {}
+      data:
+        brightness_pct: 100
+        kelvin: 5420
+      target:
+        entity_id: light.down_office_3
+    - service: light.turn_on
+      metadata: {}
+      data:
+        brightness_pct: 100
+        kelvin: 5420
+      target:
+        entity_id: light.rumpus_4
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - service: light.turn_on
+      metadata: {}
+      data:
+        brightness_pct: 100
+        kelvin: 5420
+      target:
+        entity_id: light.down_office_2
+    - service: light.turn_on
+      metadata: {}
+      data:
+        brightness_pct: 100
+        kelvin: 5420
+      target:
+        entity_id: light.rumpus_1
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - service: light.turn_on
+      metadata: {}
+      data:
+        brightness_pct: 100
+        kelvin: 5420
+      target:
+        entity_id: light.down_office_1
+    - service: light.turn_on
+      metadata: {}
+      data:
+        brightness_pct: 100
+        kelvin: 5420
+      target:
+        entity_id: light.rumpus_store_1
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - service: light.turn_on
+      metadata: {}
+      data:
+        brightness_pct: 100
+        kelvin: 5420
+      target:
+        entity_id: light.rumpus_5
+    - service: light.turn_on
+      metadata: {}
+      data:
+        brightness_pct: 100
+        kelvin: 5420
+      target:
+        entity_id: light.rumpus_store_2
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - service: light.turn_on
+      metadata: {}
+      data:
+        brightness_pct: 100
+        kelvin: 5420
+      target:
+        entity_id: light.rumpus_2
+    - service: light.turn_on
+      metadata: {}
+      data:
+        brightness_pct: 100
+        kelvin: 5420
+      target:
+        entity_id: light.rumpus_6
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - service: light.turn_on
+      metadata: {}
+      data:
+        brightness_pct: 100
+        kelvin: 5420
+      target:
+        entity_id: light.rumpus_3
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - service: light.turn_on
+      metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.down_hallway_1
+    - service: light.turn_on
+      metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.down_hallway_2
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - service: light.turn_on
+      metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.down_hallway_3
+    - service: light.turn_on
+      metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.down_office_4
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - service: light.turn_on
+      metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.down_office_3
+    - service: light.turn_on
+      metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.rumpus_4
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - service: light.turn_on
+      metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.down_office_2
+    - service: light.turn_on
+      metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.rumpus_1
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - service: light.turn_on
+      metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.down_office_1
+    - service: light.turn_on
+      metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.rumpus_store_1
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - service: light.turn_on
+      metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.rumpus_5
+    - service: light.turn_on
+      metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.rumpus_store_2
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - service: light.turn_on
+      metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.rumpus_2
+    - service: light.turn_on
+      metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.rumpus_6
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - service: light.turn_on
+      metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.rumpus_3
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+  mode: single
+- id: '1722401451595'
+  alias: 'Fun: Party lights sequence — Office button held'
+  description: Starting from the office make all the lights go on one at a time
+  trigger:
+  - device_id: dc0d2dd8523d9d5559d1dd89ec15df93
+    domain: hue
+    platform: device
+    type: long_press
+    subtype: 1
+    unique_id: 78f6a8dc-648e-421e-9b52-c4a817238811
+  condition: []
+  action:
+  - service: switch.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id: switch.adaptive_lighting_downstairslights
+  - sequence:
+    - service: light.turn_on
+      metadata: {}
+      data:
+        brightness_pct: 100
+        kelvin: 5420
+      target:
+        entity_id: light.down_office_1
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - service: light.turn_on
+      metadata: {}
+      data:
+        brightness_pct: 100
+        kelvin: 5420
+      target:
+        entity_id: light.down_office_3
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - service: light.turn_on
+      metadata: {}
+      data:
+        brightness_pct: 100
+        kelvin: 5420
+      target:
+        entity_id: light.down_office_2
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - service: light.turn_on
+      metadata: {}
+      data:
+        brightness_pct: 100
+        kelvin: 5420
+      target:
+        entity_id: light.down_office_4
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - service: light.turn_on
+      metadata: {}
+      data:
+        brightness_pct: 100
+        kelvin: 5420
+      target:
+        entity_id: light.down_hallway_1
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - service: light.turn_on
+      metadata: {}
+      data:
+        brightness_pct: 100
+        kelvin: 5420
+      target:
+        entity_id: light.down_hallway_2
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - service: light.turn_on
+      metadata: {}
+      data:
+        brightness_pct: 100
+        kelvin: 5420
+      target:
+        entity_id: light.down_hallway_3
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - service: light.turn_on
+      metadata: {}
+      data:
+        brightness_pct: 100
+        kelvin: 5420
+      target:
+        entity_id: light.rumpus_4
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - service: light.turn_on
+      metadata: {}
+      data:
+        brightness_pct: 100
+        kelvin: 5420
+      target:
+        entity_id: light.rumpus_1
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - service: light.turn_on
+      metadata: {}
+      data:
+        brightness_pct: 100
+        kelvin: 5420
+      target:
+        entity_id: light.rumpus_5
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - service: light.turn_on
+      metadata: {}
+      data:
+        brightness_pct: 100
+        kelvin: 5420
+      target:
+        entity_id: light.rumpus_2
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - service: light.turn_on
+      metadata: {}
+      data:
+        brightness_pct: 100
+        kelvin: 5420
+      target:
+        entity_id: light.rumpus_6
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - service: light.turn_on
+      metadata: {}
+      data:
+        brightness_pct: 100
+        kelvin: 5420
+      target:
+        entity_id: light.rumpus_3
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - service: light.turn_on
+      metadata: {}
+      data:
+        brightness_pct: 100
+        kelvin: 5420
+      target:
+        entity_id: light.rumpus_store_1
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - service: light.turn_on
+      metadata: {}
+      data:
+        brightness_pct: 100
+        kelvin: 5420
+      target:
+        entity_id: light.rumpus_store_2
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - service: light.turn_on
+      metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.down_office_1
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - service: light.turn_on
+      metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.down_office_3
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - service: light.turn_on
+      metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.down_office_2
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - service: light.turn_on
+      metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.down_office_4
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - service: light.turn_on
+      metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.down_hallway_1
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - service: light.turn_on
+      metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.down_hallway_2
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - service: light.turn_on
+      metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.down_hallway_3
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - service: light.turn_on
+      metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.rumpus_4
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - service: light.turn_on
+      metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.rumpus_1
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - service: light.turn_on
+      metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.rumpus_5
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - service: light.turn_on
+      metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.rumpus_2
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - service: light.turn_on
+      metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.rumpus_6
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - service: light.turn_on
+      metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.rumpus_3
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - service: light.turn_on
+      metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.rumpus_store_1
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - service: light.turn_on
+      metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.rumpus_store_2
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+  mode: single
+- id: '1722402102196'
+  alias: 'Fun: Party lights sequence — Rumpus button held'
+  description: Starting from the rumpus make all the lights go on one at a time
+  triggers:
+  - device_id: 7a1961a52488b03e73c80218ecfd6c14
+    domain: hue
+    type: long_press
+    subtype: 1
+    unique_id: 6815ef9b-a637-4a35-8c85-455d54779882
+    trigger: device
+  conditions: []
+  actions:
+  - metadata: {}
+    data: {}
+    target:
+      entity_id: switch.adaptive_lighting_downstairslights
+    action: switch.turn_off
+  - sequence:
+    - metadata: {}
+      data:
+        brightness_pct: 100
+        color_temp_kelvin: 5420
+      target:
+        entity_id: light.rumpus_3
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        brightness_pct: 100
+        color_temp_kelvin: 5420
+      target:
+        entity_id: light.rumpus_6
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        brightness_pct: 100
+        color_temp_kelvin: 5420
+      target:
+        entity_id: light.rumpus_2
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        brightness_pct: 100
+        color_temp_kelvin: 5420
+      target:
+        entity_id: light.rumpus_5
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        brightness_pct: 100
+        color_temp_kelvin: 5420
+      target:
+        entity_id: light.rumpus_1
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        brightness_pct: 100
+        color_temp_kelvin: 5420
+      target:
+        entity_id: light.rumpus_4
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        brightness_pct: 100
+        color_temp_kelvin: 5420
+      target:
+        entity_id: light.down_hallway_3
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        brightness_pct: 100
+        color_temp_kelvin: 5420
+      target:
+        entity_id: light.down_hallway_2
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        brightness_pct: 100
+        color_temp_kelvin: 5420
+      target:
+        entity_id: light.down_hallway_1
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        brightness_pct: 100
+        color_temp_kelvin: 5420
+      target:
+        entity_id: light.down_office_4
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        brightness_pct: 100
+        color_temp_kelvin: 5420
+      target:
+        entity_id: light.down_office_2
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        brightness_pct: 100
+        color_temp_kelvin: 5420
+      target:
+        entity_id: light.down_office_3
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        brightness_pct: 100
+        color_temp_kelvin: 5420
+      target:
+        entity_id: light.down_office_1
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        brightness_pct: 100
+        color_temp_kelvin: 5420
+      target:
+        entity_id: light.rumpus_store_1
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        brightness_pct: 100
+        color_temp_kelvin: 5420
+      target:
+        entity_id: light.rumpus_store_2
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.rumpus_3
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.rumpus_6
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.rumpus_2
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.rumpus_5
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.rumpus_1
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.rumpus_4
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.down_hallway_3
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.down_hallway_2
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.down_hallway_1
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.down_office_4
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.down_office_2
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.down_office_3
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.down_office_1
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.rumpus_store_1
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.rumpus_store_2
+      action: light.turn_on
+  mode: single
+- id: '1722402316773'
+  alias: 'Lighting: Restore adaptive lighting — Party button released'
+  description: Hopefully re-enable adaptive lighting after party mode ends
+  trigger:
+  - device_id: 7a1961a52488b03e73c80218ecfd6c14
+    domain: hue
+    platform: device
+    type: long_press
+    subtype: 4
+    unique_id: 9553eaaa-1a5d-4662-9217-131922a5f845
+  - device_id: dc0d2dd8523d9d5559d1dd89ec15df93
+    domain: hue
+    platform: device
+    type: long_press
+    subtype: 4
+    unique_id: 68c71fb5-c5b6-4a1c-803c-6e630e9ebbd0
+  - device_id: 9391e1ca8fe0c3819b221825079b6947
+    domain: hue
+    platform: device
+    type: long_press
+    subtype: 4
+    unique_id: f044e774-f4ca-4180-bac9-5972207b77a7
+  condition: []
+  action:
+  - service: switch.turn_on
+    target:
+      entity_id:
+      - switch.adaptive_lighting_downstairslights
+    data: {}
+  mode: single
+- id: '1725962325945'
+  alias: 'Lighting: Rumpus store on — Motion detected'
+  description: ''
+  use_blueprint:
+    path: homeassistant/motion_light.yaml
+    input:
+      motion_entity: binary_sensor.rumpus_store_motion
+      light_target:
+        device_id: e17b1337d1b75baf7ccb847b3efc3684
+- id: '1726134627780'
+  alias: 'Lighting: Hallway on — Motion detected'
+  description: ''
+  use_blueprint:
+    path: homeassistant/motion_light.yaml
+    input:
+      motion_entity: binary_sensor.hallway_motion
+      light_target:
+        entity_id:
+        - light.hallway_1
+        - light.hallway_2
+- id: '1729989121869'
+  alias: 'Lighting: Pantry on — Motion detected'
+  description: ''
+  use_blueprint:
+    path: homeassistant/motion_light.yaml
+    input:
+      motion_entity: binary_sensor.pantry_motion
+      light_target:
+        device_id: 4d011ad9391d4a82d62e1be64e9bf77d
+- id: '1733538002521'
+  alias: 'Fun: Activate party mode — Party mode on'
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - input_boolean.party_mode
+    to: 'on'
+  conditions: []
+  actions:
+  - action: switch.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id:
+      - switch.adaptive_lighting_downstairslights
+      - switch.adaptive_lighting_kitchenlights
+      - switch.adaptive_lighting_mostlights
+  - action: light.turn_off
+    metadata: {}
+    data: {}
+    target:
+      floor_id:
+      - downstairs
+      - upstairs
+  - action: automation.turn_off
+    metadata: {}
+    data:
+      stop_actions: true
+    target:
+      entity_id:
+      - automation.announcement_anyone_arrives_home
+      - automation.announcement_anyone_leaves_home
+      - automation.washing_complete
+      - automation.new_autoannouncement_who_is_home_mation
+      - automation.dad_is_sad
+      - automation.mail_arrives
+      - automation.rumpus_store_motion_lights
+      - automation.pantry_light_on_motion
+      - automation.front_steps_light_motion
+      - automation.hallway_lights_on_motion
+      - automation.upstairs_light_on
+      - automation.notify_mon_when_theres_power
+      - automation.downstairs_light_on_movement
+  - sequence:
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.deck_light_4
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.deck_light_3
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.deck_light_2
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.deck_light_1
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.family_2
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.family_1
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.family_4
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.family_3
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.cooking_1
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.cooking_3
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.cooking_2
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.cooking_5
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.cooking_4
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.table_2
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.table_1
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.table_4
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.table_3
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.living_room_downlight_3
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.living_room_downlight_6
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.living_room_downlight_2
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.living_room_downlight_5
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.living_room_downlight_4
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.living_room_downlight_1
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.hallway_4
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.hallway_3
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.hallway_2
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.hallway_1
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.front_steps_2
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.front_steps_1
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.office_1
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.office_2
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.valerie_2
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.valerie_4
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.valerie_1
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.valerie_3
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.wesley_4
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.wesley_3
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.wesley_2
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.wesley_1
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.rumpus_3
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.rumpus_6
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.rumpus_2
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.rumpus_5
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.rumpus_4
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.rumpus_1
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.rumpus_store_1
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.rumpus_store_2
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.down_hallway_3
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.down_hallway_2
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.down_hallway_1
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.down_office_4
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.down_office_3
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.down_office_2
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.down_office_1
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.master_bedroom_5
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.master_bedroom_3
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.master_bedroom_4
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.master_bedroom_6
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.master_bedroom_2
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.master_bedroom_7
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.master_bedroom_1
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.master_bathroom_1
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.pantry_1
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      data:
+        effect: prism
+      target:
+        entity_id: light.guest_1
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      target:
+        entity_id: light.pond
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      target:
+        entity_id: light.downstairs
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+    - metadata: {}
+      target:
+        entity_id: light.upstairs
+      action: light.turn_on
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 1
+        milliseconds: 0
+  mode: single
+- id: '1733538626271'
+  alias: 'Fun: Deactivate party mode — Party mode off'
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - input_boolean.party_mode
+    to: 'off'
+  conditions: []
+  actions:
+  - action: switch.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id:
+      - switch.adaptive_lighting_downstairslights
+      - switch.adaptive_lighting_kitchenlights
+      - switch.adaptive_lighting_mostlights
+  - action: automation.turn_on
+    metadata: {}
+    data:
+      stop_actions: true
+    target:
+      entity_id:
+      - automation.announcement_anyone_arrives_home
+      - automation.announcement_anyone_leaves_home
+      - automation.washing_complete
+      - automation.new_autoannouncement_who_is_home_mation
+      - automation.dad_is_sad
+      - automation.mail_arrives
+      - automation.rumpus_store_motion_lights
+      - automation.pantry_light_on_motion
+      - automation.front_steps_light_motion
+      - automation.hallway_lights_on_motion
+      - automation.upstairs_light_on
+      - automation.notify_mon_when_theres_power
+      - automation.downstairs_light_on_movement
+  mode: single
+- id: '1765510254438'
+  alias: 'Security: Frigate alert Chris — Person detected'
+  description: ''
+  use_blueprint:
+    path: SgtBatten/Stable.yaml
+    input:
+      camera:
+      - camera.northwest
+      notify_device: ec6a6e337d275ec4318cb37b4f8a9792
+      base_url: https://ha.remedial.me
+      debug: true
+      tap_action: '{{base_url}}/api/camera_proxy_stream/camera.{{trigger.payload_json[''after''][''camera'']
+        | lower | replace(''-'',''_'')}}?token={{state_attr( ''camera.'' ~ camera,
+        ''access_token'')}}'
+      button_1: Home Asisstant
+      url_1: /lovelace
+      attachment: '{{base_url}}/api/frigate{{client_id}}/notifications/{{id}}/snapshot.jpg'
+- id: '1765512720046'
+  alias: 'Security: Frigate alert Mon — Person detected'
+  description: ''
+  use_blueprint:
+    path: SgtBatten/Stable.yaml
+    input:
+      camera:
+      - camera.northwest
+      notify_device: 594a3018ba339ef4cac5e3d364059b12
+      base_url: https://ha.remedial.me
+      debug: false
+      tap_action: '{{base_url}}/api/camera_proxy_stream/camera.{{trigger.payload_json[''after''][''camera'']
+        | lower | replace(''-'',''_'')}}?token={{state_attr( ''camera.'' ~ camera,
+        ''access_token'')}}'
+      button_1: View Stream
+      url_1: '{{base_url}}/api/camera_proxy_stream/camera.{{trigger.payload_json[''after''][''camera'']
+        | lower | replace(''-'',''_'')}}?token={{state_attr( ''camera.'' ~ camera,
+        ''access_token'')}}'
+      url_3: /lovelace
+      button_3: Home Assistant
+      attachment: '{{base_url}}/api/frigate{{client_id}}/notifications/{{id}}/snapshot.jpg'
+- id: away_mode_everyone_left
+  alias: 'Presence: Away mode — Everyone left home'
+  description: 'When the last resident leaves: turn off lights and switches, close
+    shutters, turn off AC, and arm Frigate for full detection.
+
+    '
+  triggers:
+  - trigger: state
+    entity_id: group.residents
+    to: not_home
+    for:
+      minutes: 5
+  conditions:
+  - condition: state
+    entity_id: group.residents
+    state: not_home
+  actions:
+  - action: scene.create
+    data:
+      scene_id: pre_away_climate
+      snapshot_entities:
+      - climate.living
+      - climate.kitchen
+      - climate.office
+      - climate.higgins_moon
+      - climate.valerie
+      - climate.wesley
+  - parallel:
+    - action: light.turn_off
+      target:
+        entity_id: all
+    - action: switch.turn_off
+      target:
+        entity_id:
+        - switch.pond_lights
+        - switch.dehumidifier
+    - action: cover.close_cover
+      target:
+        entity_id:
+        - cover.family_room_window
+        - cover.living_room_small_window
+        - cover.living_room_big_window
+        - cover.office_window
+        - cover.valerie_window
+    - action: climate.turn_off
+      target:
+        entity_id:
+        - climate.living
+        - climate.kitchen
+        - climate.office
+        - climate.higgins_moon
+        - climate.valerie
+        - climate.wesley
+    - action: switch.turn_on
+      target:
+        entity_id:
+        - switch.northwest_detect
+        - switch.northwest_motion
+        - switch.northwest_recordings
+        - switch.northwest_snapshots
+        - switch.northwest_review_alerts
+        - switch.northwest_review_detections
+  - action: input_boolean.turn_on
+    target:
+      entity_id: input_boolean.away_mode
+  - action: notify.mobile_app_pixel_9_pro_xl
+    data:
+      title: Away mode active
+      message: Everyone has left. Lights off, shutters closed, Frigate armed.
+  mode: single
+- id: away_mode_someone_returned
+  alias: 'Presence: Away mode — Someone returned home'
+  description: 'When the first resident returns: turn on welcome lights, open shutters,
+    restore AC, disarm Frigate back to normal detection.
+
+    '
+  triggers:
+  - trigger: state
+    entity_id:
+    - person.chris
+    - person.mon
+    - person.valerie
+    - person.wesley
+    - person.amanda
+    - person.angus
+    - person.andy
+    - person.bill
+    - person.brian
+    - person.cameron
+    - person.frances
+    - person.lauren
+    - person.madeleine
+    - person.sabrina
+    - person.yin_lay
+    - person.than_htay
+    - person.lisa
+    - person.jake
+    - person.kye
+    to: home
+  conditions:
+  - condition: state
+    entity_id: input_boolean.away_mode
+    state: 'on'
+  actions:
+  - parallel:
+    - action: light.turn_on
+      target:
+        entity_id: light.front_steps
+      data:
+        brightness_pct: 100
+    - action: light.turn_on
+      target:
+        entity_id: light.foyer
+      data:
+        brightness_pct: 80
+    - action: light.turn_on
+      target:
+        entity_id:
+        - light.living_room_downlight_1
+        - light.living_room_downlight_2
+        - light.living_room_downlight_3
+        - light.living_room_downlight_4
+        - light.living_room_downlight_5
+        - light.living_room_downlight_6
+      data:
+        brightness_pct: 30
+    - action: cover.open_cover
+      target:
+        entity_id:
+        - cover.family_room_window
+        - cover.living_room_small_window
+        - cover.living_room_big_window
+        - cover.office_window
+        - cover.valerie_window
+    - action: scene.turn_on
+      target:
+        entity_id: scene.pre_away_climate
+    - action: switch.turn_on
+      target:
+        entity_id:
+        - switch.northwest_detect
+        - switch.northwest_motion
+        - switch.northwest_recordings
+        - switch.northwest_review_alerts
+        - switch.northwest_review_detections
+    - action: switch.turn_off
+      target:
+        entity_id: switch.northwest_snapshots
+  - action: input_boolean.turn_off
+    target:
+      entity_id: input_boolean.away_mode
+  mode: single
+- id: frigate_front_door_person
+  alias: 'Security: Announce person at front door — Frigate detection'
+  description: 'When Frigate detects a person at the front door zone, announce on
+    speakers and send a notification with snapshot. Acts as a doorbell substitute.
+
+    '
+  triggers:
+  - trigger: mqtt
+    topic: frigate/events
+    payload: new
+    value_template: '{{ value_json.type }}'
+  conditions:
+  - condition: template
+    value_template: "{{ trigger.payload_json.after.label == 'person'\n   and trigger.payload_json.after.entered_zones
+      | length > 0 }}\n"
+  - condition: state
+    entity_id: group.residents
+    state: home
+  - condition: template
+    value_template: '{{ (as_timestamp(now()) - as_timestamp(states.automation.security_announce_person_at_front_door_frigate_detection.attributes.last_triggered
+      | default(''1970-01-01''))) > 120 }}
+
+      '
+  actions:
+  - variables:
+      camera: '{{ trigger.payload_json.after.camera }}'
+      snapshot_url: https://ha.remedial.me/api/frigate/notifications/{{ trigger.payload_json.after.id
+        }}/snapshot.jpg
+  - parallel:
+    - action: script.household_announce_message
+      data:
+        message: Someone is at the front door.
+        entity_id: media_player.mini_speakers
+    - action: notify.mobile_app_pixel_9_pro_xl
+      data:
+        title: Front door
+        message: Someone is at the front door.
+        data:
+          image: '{{ snapshot_url }}'
+          url: https://ha.remedial.me/lovelace
+          tag: front_door
+    - action: notify.mobile_app_mon_pixel_9_pro_fold
+      data:
+        title: တံခါးရှေ့မှာ လူရှိနေပါတယ်
+        message: တံခါးရှေ့မှာ လူရှိနေပါတယ်
+        data:
+          image: '{{ snapshot_url }}'
+          tag: front_door
+  mode: single
+- id: kids_bedtime_30min_warning
+  alias: 'Valerie: Bedtime 30 minute warning — 8:00pm'
+  description: 30 minute warning before 8:30pm bedtime
+  triggers:
+  - trigger: time
+    at: '20:00:00'
+  conditions: []
+  actions:
+  - variables:
+      kids_home: '{% set kids = [] %} {% if is_state(''person.valerie'', ''home'')
+        %}{% set kids = kids + [''Valerie''] %}{% endif %} {% if is_state(''person.wesley'',
+        ''home'') %}{% set kids = kids + [''Wesley''] %}{% endif %} {{ kids | join(''
+        and '') }}
+
+        '
+  - parallel:
+    - action: script.household_announce_message
+      data:
+        message: '{{ kids_home }}, 30 minutes until bedtime. Start winding down.'
+        entity_id: media_player.mini_speakers
+  mode: single
+- id: kids_bedtime_10min_warning
+  alias: 'Valerie: Bedtime 10 minute warning — 8:20pm'
+  description: 10 minute warning before 8:30pm bedtime
+  triggers:
+  - trigger: time
+    at: '20:20:00'
+  conditions:
+  - condition: or
+    conditions:
+    - condition: state
+      entity_id: person.valerie
+      state: home
+    - condition: state
+      entity_id: person.wesley
+      state: home
+  actions:
+  - variables:
+      kids_home: '{% set kids = [] %} {% if is_state(''person.valerie'', ''home'')
+        %}{% set kids = kids + [''Valerie''] %}{% endif %} {% if is_state(''person.wesley'',
+        ''home'') %}{% set kids = kids + [''Wesley''] %}{% endif %} {{ kids | join(''
+        and '') }}
+
+        '
+  - parallel:
+    - action: script.household_announce_message
+      data:
+        message: '{{ kids_home }}, 10 minutes until bedtime. Time to brush teeth.'
+        entity_id: media_player.mini_speakers
+    - if:
+      - condition: state
+        entity_id: person.valerie
+        state: home
+      then:
+      - action: script.household_announce_message
+        data:
+          message: Valerie, 10 minutes. Brush your teeth.
+          entity_id: media_player.valerie_speaker
+    - if:
+      - condition: state
+        entity_id: person.wesley
+        state: home
+      then:
+      - action: script.household_announce_message
+        data:
+          message: Wesley, 10 minutes. Brush your teeth.
+          entity_id: media_player.wesley_speaker
+  mode: single
+- id: kids_bedtime_830pm
+  alias: 'Valerie: Bedtime sequence — 8:30pm'
+  description: 'At 8:30pm: turn off TV if playing, dim kids room lights, play soft
+    music on their speakers.
+
+    '
+  triggers:
+  - trigger: time
+    at: '20:30:00'
+  conditions:
+  - condition: or
+    conditions:
+    - condition: state
+      entity_id: person.valerie
+      state: home
+    - condition: state
+      entity_id: person.wesley
+      state: home
+  actions:
+  - if:
+    - condition: state
+      entity_id: media_player.shield
+      state: playing
+    then:
+    - action: media_player.turn_off
+      target:
+        entity_id:
+        - media_player.shield
+        - media_player.shield_2
+  - if:
+    - condition: state
+      entity_id: person.valerie
+      state: home
+    then:
+    - action: light.turn_on
+      target:
+        entity_id: light.valerie
+      data:
+        brightness_pct: 20
+        kelvin: 2700
+        transition: 30
+    - action: media_player.volume_set
+      target:
+        entity_id: media_player.valerie_speaker
+      data:
+        volume_level: 0.2
+    - action: tts.google_cloud_say
+      data:
+        entity_id: media_player.valerie_speaker
+        message: Valerie, it's bedtime. Good night.
+  - if:
+    - condition: state
+      entity_id: person.wesley
+      state: home
+    then:
+    - action: light.turn_on
+      target:
+        entity_id: light.wesley
+      data:
+        brightness_pct: 20
+        kelvin: 2700
+        transition: 30
+    - action: media_player.volume_set
+      target:
+        entity_id:
+        - media_player.mons_office_speaker
+      data:
+        volume_level: 0.2
+    - action: tts.google_cloud_say
+      data:
+        entity_id: media_player.wesley_speaker
+        message: Wesley, it's bedtime. Good night.
+  mode: single
