@@ -1,0 +1,459 @@
+type: picture-elements
+image: /local/floorplan/base.png?version=2A5B0BA7691624BD44009FA200C54C16
+elements:
+  - type: custom:config-template-card
+    variables:
+      LIGHT_STATE: states['light.office'].state
+      COLOR_MODE: states['light.office'].attributes.color_mode
+      LIGHT_COLOR: states['light.office'].attributes.hs_color
+      BRIGHTNESS: states['light.office'].attributes.brightness
+    entities:
+      - light.office
+    element:
+      type: image
+      image: /local/floorplan/transparent.png?version=56ABE4CBC175363DA0810882244B34FF
+      state_image:
+        'on': >-
+          ${COLOR_MODE === 'color_temp' || (COLOR_MODE === 'rgb' && LIGHT_COLOR && LIGHT_COLOR[0] == 0 && LIGHT_COLOR[1] == 0) ?
+          '/local/floorplan/light.office.png?version=7A5B0448A7DA223EA8E5C887B9A91C96' :
+          '/local/floorplan/light.office.red.png?version=77E491AFBA3865337A6F8D0E520A98B4' }
+      entity: light.office
+    style:
+      filter: '${ "hue-rotate(" + (LIGHT_COLOR ? LIGHT_COLOR[0] : 0) + "deg)"}'
+      opacity: '${LIGHT_STATE === ''on'' ? (BRIGHTNESS / 255) : ''100''}'
+      mix-blend-mode: lighten
+      pointer-events: none
+      left: 50%
+      top: 50%
+      width: 100%
+  - type: custom:config-template-card
+    variables:
+      LIGHT_STATE: states['light.family'].state
+      COLOR_MODE: states['light.family'].attributes.color_mode
+      LIGHT_COLOR: states['light.family'].attributes.hs_color
+      BRIGHTNESS: states['light.family'].attributes.brightness
+    entities:
+      - light.family
+    element:
+      type: image
+      image: /local/floorplan/transparent.png?version=56ABE4CBC175363DA0810882244B34FF
+      state_image:
+        'on': >-
+          ${COLOR_MODE === 'color_temp' || (COLOR_MODE === 'rgb' && LIGHT_COLOR && LIGHT_COLOR[0] == 0 && LIGHT_COLOR[1] == 0) ?
+          '/local/floorplan/light.family.png?version=40B7FA6F646925B42EAEC7140B9FD262' :
+          '/local/floorplan/light.family.red.png?version=BDCCCD129136E5817FEA95D6C7B11272' }
+      entity: light.family
+    style:
+      filter: '${ "hue-rotate(" + (LIGHT_COLOR ? LIGHT_COLOR[0] : 0) + "deg)"}'
+      opacity: '${LIGHT_STATE === ''on'' ? (BRIGHTNESS / 255) : ''100''}'
+      mix-blend-mode: lighten
+      pointer-events: none
+      left: 50%
+      top: 50%
+      width: 100%
+  - type: custom:config-template-card
+    variables:
+      LIGHT_STATE: states['light.wesley'].state
+      COLOR_MODE: states['light.wesley'].attributes.color_mode
+      LIGHT_COLOR: states['light.wesley'].attributes.hs_color
+      BRIGHTNESS: states['light.wesley'].attributes.brightness
+    entities:
+      - light.wesley
+    element:
+      type: image
+      image: /local/floorplan/transparent.png?version=56ABE4CBC175363DA0810882244B34FF
+      state_image:
+        'on': >-
+          ${COLOR_MODE === 'color_temp' || (COLOR_MODE === 'rgb' && LIGHT_COLOR && LIGHT_COLOR[0] == 0 && LIGHT_COLOR[1] == 0) ?
+          '/local/floorplan/light.wesley.png?version=08F97CF3A5417A1A3F092C3B0DBCB884' :
+          '/local/floorplan/light.wesley.red.png?version=C4E04938CF0D166BB0C4FFB514E2695F' }
+      entity: light.wesley
+    style:
+      filter: '${ "hue-rotate(" + (LIGHT_COLOR ? LIGHT_COLOR[0] : 0) + "deg)"}'
+      opacity: '${LIGHT_STATE === ''on'' ? (BRIGHTNESS / 255) : ''100''}'
+      mix-blend-mode: lighten
+      pointer-events: none
+      left: 50%
+      top: 50%
+      width: 100%
+  - type: conditional
+    conditions:
+      - entity: light.upstairs
+        state: 'on'
+    elements:
+      - type: image
+        tap_action:
+          action: none
+        hold_action:
+          action: none
+        entity:
+          - light.upstairs
+        image: /local/floorplan/light.upstairs.png?version=56AA2A6259A7FAA9B729FEE90EF8446E
+        filter: none
+        style:
+          left: 50%
+          top: 50%
+          width: 100%
+          mix-blend-mode: lighten
+  - type: custom:config-template-card
+    variables:
+      LIGHT_STATE: states['light.table'].state
+      COLOR_MODE: states['light.table'].attributes.color_mode
+      LIGHT_COLOR: states['light.table'].attributes.hs_color
+      BRIGHTNESS: states['light.table'].attributes.brightness
+    entities:
+      - light.table
+    element:
+      type: image
+      image: /local/floorplan/transparent.png?version=56ABE4CBC175363DA0810882244B34FF
+      state_image:
+        'on': >-
+          ${COLOR_MODE === 'color_temp' || (COLOR_MODE === 'rgb' && LIGHT_COLOR && LIGHT_COLOR[0] == 0 && LIGHT_COLOR[1] == 0) ?
+          '/local/floorplan/light.table.png?version=C2421C578B53EDB6DD525F08676C89BB' :
+          '/local/floorplan/light.table.red.png?version=65287D13138CF1AD42A195A284D4B5BE' }
+      entity: light.table
+    style:
+      filter: '${ "hue-rotate(" + (LIGHT_COLOR ? LIGHT_COLOR[0] : 0) + "deg)"}'
+      opacity: '${LIGHT_STATE === ''on'' ? (BRIGHTNESS / 255) : ''100''}'
+      mix-blend-mode: lighten
+      pointer-events: none
+      left: 50%
+      top: 50%
+      width: 100%
+  - type: custom:config-template-card
+    variables:
+      LIGHT_STATE: states['light.valerie'].state
+      COLOR_MODE: states['light.valerie'].attributes.color_mode
+      LIGHT_COLOR: states['light.valerie'].attributes.hs_color
+      BRIGHTNESS: states['light.valerie'].attributes.brightness
+    entities:
+      - light.valerie
+    element:
+      type: image
+      image: /local/floorplan/transparent.png?version=56ABE4CBC175363DA0810882244B34FF
+      state_image:
+        'on': >-
+          ${COLOR_MODE === 'color_temp' || (COLOR_MODE === 'rgb' && LIGHT_COLOR && LIGHT_COLOR[0] == 0 && LIGHT_COLOR[1] == 0) ?
+          '/local/floorplan/light.valerie.png?version=DA1F15C3DC3CEAF6A319E49C85C5C732' :
+          '/local/floorplan/light.valerie.red.png?version=1B6DFC3DF6EB9CF74162D84959342046' }
+      entity: light.valerie
+    style:
+      filter: '${ "hue-rotate(" + (LIGHT_COLOR ? LIGHT_COLOR[0] : 0) + "deg)"}'
+      opacity: '${LIGHT_STATE === ''on'' ? (BRIGHTNESS / 255) : ''100''}'
+      mix-blend-mode: lighten
+      pointer-events: none
+      left: 50%
+      top: 50%
+      width: 100%
+  - type: conditional
+    conditions:
+      - entity: light.bathroom
+        state: 'on'
+    elements:
+      - type: image
+        tap_action:
+          action: none
+        hold_action:
+          action: none
+        entity:
+          - light.bathroom
+        image: /local/floorplan/light.bathroom.png?version=39F3538BC6858DE9F3134EAAA4983EBA
+        filter: none
+        style:
+          left: 50%
+          top: 50%
+          width: 100%
+          mix-blend-mode: lighten
+  - type: custom:config-template-card
+    variables:
+      LIGHT_STATE: states['light.cooking'].state
+      COLOR_MODE: states['light.cooking'].attributes.color_mode
+      LIGHT_COLOR: states['light.cooking'].attributes.hs_color
+      BRIGHTNESS: states['light.cooking'].attributes.brightness
+    entities:
+      - light.cooking
+    element:
+      type: image
+      image: /local/floorplan/transparent.png?version=56ABE4CBC175363DA0810882244B34FF
+      state_image:
+        'on': >-
+          ${COLOR_MODE === 'color_temp' || (COLOR_MODE === 'rgb' && LIGHT_COLOR && LIGHT_COLOR[0] == 0 && LIGHT_COLOR[1] == 0) ?
+          '/local/floorplan/light.cooking.png?version=A45995EF8EC3836F366BFA7FCED8975D' :
+          '/local/floorplan/light.cooking.red.png?version=0E6EF4C2F9A854F26D465BC1944D154D' }
+      entity: light.cooking
+    style:
+      filter: '${ "hue-rotate(" + (LIGHT_COLOR ? LIGHT_COLOR[0] : 0) + "deg)"}'
+      opacity: '${LIGHT_STATE === ''on'' ? (BRIGHTNESS / 255) : ''100''}'
+      mix-blend-mode: lighten
+      pointer-events: none
+      left: 50%
+      top: 50%
+      width: 100%
+  - type: custom:config-template-card
+    variables:
+      LIGHT_STATE: states['light.hallway_2'].state
+      COLOR_MODE: states['light.hallway_2'].attributes.color_mode
+      LIGHT_COLOR: states['light.hallway_2'].attributes.hs_color
+      BRIGHTNESS: states['light.hallway_2'].attributes.brightness
+    entities:
+      - light.hallway_2
+    element:
+      type: image
+      image: /local/floorplan/transparent.png?version=56ABE4CBC175363DA0810882244B34FF
+      state_image:
+        'on': >-
+          ${COLOR_MODE === 'color_temp' || (COLOR_MODE === 'rgb' && LIGHT_COLOR && LIGHT_COLOR[0] == 0 && LIGHT_COLOR[1] == 0) ?
+          '/local/floorplan/light.hallway_2.png?version=7F38F6A4B73C0E4D9ED05ED42817A069' :
+          '/local/floorplan/light.hallway_2.red.png?version=789BC9D6D96C4360270C5AFC1EA23175' }
+      entity: light.hallway_2
+    style:
+      filter: '${ "hue-rotate(" + (LIGHT_COLOR ? LIGHT_COLOR[0] : 0) + "deg)"}'
+      opacity: '${LIGHT_STATE === ''on'' ? (BRIGHTNESS / 255) : ''100''}'
+      mix-blend-mode: lighten
+      pointer-events: none
+      left: 50%
+      top: 50%
+      width: 100%
+  - type: custom:config-template-card
+    variables:
+      LIGHT_STATE: states['light.living_room'].state
+      COLOR_MODE: states['light.living_room'].attributes.color_mode
+      LIGHT_COLOR: states['light.living_room'].attributes.hs_color
+      BRIGHTNESS: states['light.living_room'].attributes.brightness
+    entities:
+      - light.living_room
+    element:
+      type: image
+      image: /local/floorplan/transparent.png?version=56ABE4CBC175363DA0810882244B34FF
+      state_image:
+        'on': >-
+          ${COLOR_MODE === 'color_temp' || (COLOR_MODE === 'rgb' && LIGHT_COLOR && LIGHT_COLOR[0] == 0 && LIGHT_COLOR[1] == 0) ?
+          '/local/floorplan/light.living_room.png?version=F7EED03E32F260C2A63FF75CC0510FAB' :
+          '/local/floorplan/light.living_room.red.png?version=52B2C04A4CA6FB937C1B186AC7BCC776' }
+      entity: light.living_room
+    style:
+      filter: '${ "hue-rotate(" + (LIGHT_COLOR ? LIGHT_COLOR[0] : 0) + "deg)"}'
+      opacity: '${LIGHT_STATE === ''on'' ? (BRIGHTNESS / 255) : ''100''}'
+      mix-blend-mode: lighten
+      pointer-events: none
+      left: 50%
+      top: 50%
+      width: 100%
+  - type: custom:config-template-card
+    variables:
+      LIGHT_STATE: states['light.deck'].state
+      COLOR_MODE: states['light.deck'].attributes.color_mode
+      LIGHT_COLOR: states['light.deck'].attributes.hs_color
+      BRIGHTNESS: states['light.deck'].attributes.brightness
+    entities:
+      - light.deck
+    element:
+      type: image
+      image: /local/floorplan/transparent.png?version=56ABE4CBC175363DA0810882244B34FF
+      state_image:
+        'on': >-
+          ${COLOR_MODE === 'color_temp' || (COLOR_MODE === 'rgb' && LIGHT_COLOR && LIGHT_COLOR[0] == 0 && LIGHT_COLOR[1] == 0) ?
+          '/local/floorplan/light.deck.png?version=32B0996362AAF669B943237765E6DB4A' :
+          '/local/floorplan/light.deck.red.png?version=95537ADA73409F9411D4DCAF5031E8F3' }
+      entity: light.deck
+    style:
+      filter: '${ "hue-rotate(" + (LIGHT_COLOR ? LIGHT_COLOR[0] : 0) + "deg)"}'
+      opacity: '${LIGHT_STATE === ''on'' ? (BRIGHTNESS / 255) : ''100''}'
+      mix-blend-mode: lighten
+      pointer-events: none
+      left: 50%
+      top: 50%
+      width: 100%
+  - type: custom:config-template-card
+    variables:
+      LIGHT_STATE: states['light.hallway_4'].state
+      COLOR_MODE: states['light.hallway_4'].attributes.color_mode
+      LIGHT_COLOR: states['light.hallway_4'].attributes.hs_color
+      BRIGHTNESS: states['light.hallway_4'].attributes.brightness
+    entities:
+      - light.hallway_4
+    element:
+      type: image
+      image: /local/floorplan/transparent.png?version=56ABE4CBC175363DA0810882244B34FF
+      state_image:
+        'on': >-
+          ${COLOR_MODE === 'color_temp' || (COLOR_MODE === 'rgb' && LIGHT_COLOR && LIGHT_COLOR[0] == 0 && LIGHT_COLOR[1] == 0) ?
+          '/local/floorplan/light.hallway_4.png?version=02C396D2923D16E6E1BF0D16284E714B' :
+          '/local/floorplan/light.hallway_4.red.png?version=C944980E7C0E69629378E5BD5132F56B' }
+      entity: light.hallway_4
+    style:
+      filter: '${ "hue-rotate(" + (LIGHT_COLOR ? LIGHT_COLOR[0] : 0) + "deg)"}'
+      opacity: '${LIGHT_STATE === ''on'' ? (BRIGHTNESS / 255) : ''100''}'
+      mix-blend-mode: lighten
+      pointer-events: none
+      left: 50%
+      top: 50%
+      width: 100%
+  - type: custom:config-template-card
+    variables:
+      LIGHT_STATE: states['light.front_steps'].state
+      COLOR_MODE: states['light.front_steps'].attributes.color_mode
+      LIGHT_COLOR: states['light.front_steps'].attributes.hs_color
+      BRIGHTNESS: states['light.front_steps'].attributes.brightness
+    entities:
+      - light.front_steps
+    element:
+      type: image
+      image: /local/floorplan/transparent.png?version=56ABE4CBC175363DA0810882244B34FF
+      state_image:
+        'on': >-
+          ${COLOR_MODE === 'color_temp' || (COLOR_MODE === 'rgb' && LIGHT_COLOR && LIGHT_COLOR[0] == 0 && LIGHT_COLOR[1] == 0) ?
+          '/local/floorplan/light.front_steps.png?version=6A4F49AFA1A09D1AD692F637F5277541' :
+          '/local/floorplan/light.front_steps.red.png?version=14D04C5AB44516B2BC7E54C6B1055598' }
+      entity: light.front_steps
+    style:
+      filter: '${ "hue-rotate(" + (LIGHT_COLOR ? LIGHT_COLOR[0] : 0) + "deg)"}'
+      opacity: '${LIGHT_STATE === ''on'' ? (BRIGHTNESS / 255) : ''100''}'
+      mix-blend-mode: lighten
+      pointer-events: none
+      left: 50%
+      top: 50%
+      width: 100%
+  - type: state-icon
+    entity: light.office
+    title: null
+    style:
+      top: 67.27%
+      left: 39.19%
+      border-radius: 50%
+      text-align: center
+      background-color: rgba(255, 255, 255, 0.3)
+    tap_action:
+      action: toggle
+  - type: state-icon
+    entity: light.family
+    title: null
+    style:
+      top: 50.15%
+      left: 71.66%
+      border-radius: 50%
+      text-align: center
+      background-color: rgba(255, 255, 255, 0.3)
+    tap_action:
+      action: toggle
+  - type: state-icon
+    entity: light.wesley
+    title: null
+    style:
+      top: 46.35%
+      left: 24.95%
+      border-radius: 50%
+      text-align: center
+      background-color: rgba(255, 255, 255, 0.3)
+    tap_action:
+      action: toggle
+  - type: state-icon
+    entity: light.upstairs
+    title: null
+    style:
+      top: 56.77%
+      left: 54.61%
+      border-radius: 50%
+      text-align: center
+      background-color: rgba(255, 255, 255, 0.3)
+    tap_action:
+      action: toggle
+  - type: state-icon
+    entity: light.table
+    title: null
+    style:
+      top: 49.44%
+      left: 43.19%
+      border-radius: 50%
+      text-align: center
+      background-color: rgba(255, 255, 255, 0.3)
+    tap_action:
+      action: toggle
+  - type: state-icon
+    entity: light.valerie
+    title: null
+    style:
+      top: 67.12%
+      left: 24.34%
+      border-radius: 50%
+      text-align: center
+      background-color: rgba(255, 255, 255, 0.3)
+    tap_action:
+      action: toggle
+  - type: state-icon
+    entity: light.bathroom
+    title: null
+    style:
+      top: 57.26%
+      left: 21.92%
+      border-radius: 50%
+      text-align: center
+      background-color: rgba(255, 255, 255, 0.3)
+    tap_action:
+      action: toggle
+  - type: state-icon
+    entity: light.cooking
+    title: null
+    style:
+      top: 48.65%
+      left: 56.35%
+      border-radius: 50%
+      text-align: center
+      background-color: rgba(255, 255, 255, 0.3)
+    tap_action:
+      action: toggle
+  - type: state-icon
+    entity: light.hallway_2
+    title: null
+    style:
+      top: 56.78%
+      left: 33.13%
+      border-radius: 50%
+      text-align: center
+      background-color: rgba(255, 255, 255, 0.3)
+    tap_action:
+      action: toggle
+  - type: state-icon
+    entity: light.living_room
+    title: null
+    style:
+      top: 61.30%
+      left: 67.86%
+      border-radius: 50%
+      text-align: center
+      background-color: rgba(255, 255, 255, 0.3)
+    tap_action:
+      action: toggle
+  - type: state-icon
+    entity: light.deck
+    title: null
+    style:
+      top: 37.98%
+      left: 56.87%
+      border-radius: 50%
+      text-align: center
+      background-color: rgba(255, 255, 255, 0.3)
+    tap_action:
+      action: toggle
+  - type: state-icon
+    entity: light.hallway_4
+    title: null
+    style:
+      top: 60.34%
+      left: 48.64%
+      border-radius: 50%
+      text-align: center
+      background-color: rgba(255, 255, 255, 0.3)
+    tap_action:
+      action: toggle
+  - type: state-icon
+    entity: light.front_steps
+    title: null
+    style:
+      top: 68.80%
+      left: 61.34%
+      border-radius: 50%
+      text-align: center
+      background-color: rgba(255, 255, 255, 0.3)
+    tap_action:
+      action: toggle

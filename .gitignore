@@ -1,22 +1,12 @@
 .google.token
 client_secret_213674934335-5jciimeigstgu1hfsm40dst040k76j1j.apps.googleusercontent.com.json
 config_backup.tar.gz
-*.db
-*.db-shm
-*.db-wal
-secrets.yaml
 SERVICE_ACCOUNT.JSON
 google_cloud.json
 Untitled-1.txt
-tts/
 custom_components/
 .cache/
-.storage/auth.session
 sabnzbd.conf
-.storage/application_credentials
-.storage/auth_provider.homeassistant
-.storage/
-.cloud/
 *.db-wal
 
 # Databases and Logs
@@ -27,14 +17,12 @@ sabnzbd.conf
 *.log.*
 
 # Folders to Ignore
-.storage/
 .cloud/
 backups/
 media/
 tts/
 image_cache/
 downloads/
-www/
 
 # Sensitive Data (VERY IMPORTANT)
 secrets.yaml
@@ -42,3 +30,21 @@ secrets.yaml
 # OS files
 .DS_Store
 Thumbs.db
+
+# Ignore the entire storage folder by default
+.storage/*
+
+# BUT, allow these specific files (The "Application" metadata)
+!.storage/core.entity_registry
+!.storage/core.device_registry
+!.storage/core.area_registry
+!.storage/core.config_entries
+!.storage/lovelace*
+!.storage/labels.storage
+
+# Keep these secret files BLOCKED
+.storage/auth
+.storage/auth_provider.homeassistant
+.storage/onboarding
+.storage/cloud
+.storage/hassio

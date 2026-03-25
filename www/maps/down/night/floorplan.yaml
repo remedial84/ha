@@ -1,0 +1,375 @@
+type: picture-elements
+image: /local/floorplan/base.png?version=760431364A98CB21CAEB0E0EA2D940E3
+elements:
+  - type: custom:config-template-card
+    variables:
+      LIGHT_STATE: states['light.rumpus'].state
+      COLOR_MODE: states['light.rumpus'].attributes.color_mode
+      LIGHT_COLOR: states['light.rumpus'].attributes.hs_color
+      BRIGHTNESS: states['light.rumpus'].attributes.brightness
+    entities:
+      - light.rumpus
+    element:
+      type: image
+      image: /local/floorplan/transparent.png?version=56ABE4CBC175363DA0810882244B34FF
+      state_image:
+        'on': >-
+          ${COLOR_MODE === 'color_temp' || (COLOR_MODE === 'rgb' && LIGHT_COLOR && LIGHT_COLOR[0] == 0 && LIGHT_COLOR[1] == 0) ?
+          '/local/floorplan/light.rumpus.png?version=BFF21396DAC91CB815DF74D1D14CE424' :
+          '/local/floorplan/light.rumpus.red.png?version=CDBD51E0029F40AB366E4A4089E57AEF' }
+      entity: light.rumpus
+    style:
+      filter: '${ "hue-rotate(" + (LIGHT_COLOR ? LIGHT_COLOR[0] : 0) + "deg)"}'
+      opacity: '${LIGHT_STATE === ''on'' ? (BRIGHTNESS / 255) : ''100''}'
+      mix-blend-mode: lighten
+      pointer-events: none
+      left: 50%
+      top: 50%
+      width: 100%
+  - type: custom:config-template-card
+    variables:
+      LIGHT_STATE: states['light.down_hallway'].state
+      COLOR_MODE: states['light.down_hallway'].attributes.color_mode
+      LIGHT_COLOR: states['light.down_hallway'].attributes.hs_color
+      BRIGHTNESS: states['light.down_hallway'].attributes.brightness
+    entities:
+      - light.down_hallway
+    element:
+      type: image
+      image: /local/floorplan/transparent.png?version=56ABE4CBC175363DA0810882244B34FF
+      state_image:
+        'on': >-
+          ${COLOR_MODE === 'color_temp' || (COLOR_MODE === 'rgb' && LIGHT_COLOR && LIGHT_COLOR[0] == 0 && LIGHT_COLOR[1] == 0) ?
+          '/local/floorplan/light.down_hallway.png?version=D28BBE8801E3D449E96DB751EF3244DB' :
+          '/local/floorplan/light.down_hallway.red.png?version=08200AAD8FDB94FC4373E704D6839612' }
+      entity: light.down_hallway
+    style:
+      filter: '${ "hue-rotate(" + (LIGHT_COLOR ? LIGHT_COLOR[0] : 0) + "deg)"}'
+      opacity: '${LIGHT_STATE === ''on'' ? (BRIGHTNESS / 255) : ''100''}'
+      mix-blend-mode: lighten
+      pointer-events: none
+      left: 50%
+      top: 50%
+      width: 100%
+  - type: custom:config-template-card
+    variables:
+      LIGHT_STATE: states['light.guestroom'].state
+      COLOR_MODE: states['light.guestroom'].attributes.color_mode
+      LIGHT_COLOR: states['light.guestroom'].attributes.hs_color
+      BRIGHTNESS: states['light.guestroom'].attributes.brightness
+    entities:
+      - light.guestroom
+    element:
+      type: image
+      image: /local/floorplan/transparent.png?version=56ABE4CBC175363DA0810882244B34FF
+      state_image:
+        'on': >-
+          ${COLOR_MODE === 'color_temp' || (COLOR_MODE === 'rgb' && LIGHT_COLOR && LIGHT_COLOR[0] == 0 && LIGHT_COLOR[1] == 0) ?
+          '/local/floorplan/light.guestroom.png?version=30EDF2BB0835633C02B6B58DB5109CB1' :
+          '/local/floorplan/light.guestroom.red.png?version=A691D2B0819E527EBB2F9BACA2961555' }
+      entity: light.guestroom
+    style:
+      filter: '${ "hue-rotate(" + (LIGHT_COLOR ? LIGHT_COLOR[0] : 0) + "deg)"}'
+      opacity: '${LIGHT_STATE === ''on'' ? (BRIGHTNESS / 255) : ''100''}'
+      mix-blend-mode: lighten
+      pointer-events: none
+      left: 50%
+      top: 50%
+      width: 100%
+  - type: conditional
+    conditions:
+      - entity: light.laundry
+        state: 'on'
+    elements:
+      - type: image
+        tap_action:
+          action: none
+        hold_action:
+          action: none
+        entity:
+          - light.laundry
+        image: /local/floorplan/light.laundry.png?version=DD620A5C1D63C0B507E55D5F1419A11D
+        filter: none
+        style:
+          left: 50%
+          top: 50%
+          width: 100%
+          mix-blend-mode: lighten
+  - type: conditional
+    conditions:
+      - entity: light.storage
+        state: 'on'
+    elements:
+      - type: image
+        tap_action:
+          action: none
+        hold_action:
+          action: none
+        entity:
+          - light.storage
+        image: /local/floorplan/light.storage.png?version=FC248776D839C7197310B9D2551499D3
+        filter: none
+        style:
+          left: 50%
+          top: 50%
+          width: 100%
+          mix-blend-mode: lighten
+  - type: custom:config-template-card
+    variables:
+      LIGHT_STATE: states['light.rumpus_store'].state
+      COLOR_MODE: states['light.rumpus_store'].attributes.color_mode
+      LIGHT_COLOR: states['light.rumpus_store'].attributes.hs_color
+      BRIGHTNESS: states['light.rumpus_store'].attributes.brightness
+    entities:
+      - light.rumpus_store
+    element:
+      type: image
+      image: /local/floorplan/transparent.png?version=56ABE4CBC175363DA0810882244B34FF
+      state_image:
+        'on': >-
+          ${COLOR_MODE === 'color_temp' || (COLOR_MODE === 'rgb' && LIGHT_COLOR && LIGHT_COLOR[0] == 0 && LIGHT_COLOR[1] == 0) ?
+          '/local/floorplan/light.rumpus_store.png?version=CC363BE47396A88324C43D7D73F847AA' :
+          '/local/floorplan/light.rumpus_store.red.png?version=266D51BD27D1266B8F56D5B7FC29382D' }
+      entity: light.rumpus_store
+    style:
+      filter: '${ "hue-rotate(" + (LIGHT_COLOR ? LIGHT_COLOR[0] : 0) + "deg)"}'
+      opacity: '${LIGHT_STATE === ''on'' ? (BRIGHTNESS / 255) : ''100''}'
+      mix-blend-mode: lighten
+      pointer-events: none
+      left: 50%
+      top: 50%
+      width: 100%
+  - type: conditional
+    conditions:
+      - entity: switch.pond_lights
+        state: 'on'
+    elements:
+      - type: image
+        tap_action:
+          action: none
+        hold_action:
+          action: none
+        entity:
+          - switch.pond_lights
+        image: /local/floorplan/switch.pond_lights.png?version=23D95AE246C2D0DA953A4E5C9CC6A8AE
+        filter: none
+        style:
+          left: 50%
+          top: 50%
+          width: 100%
+          mix-blend-mode: lighten
+  - type: conditional
+    conditions:
+      - entity: light.downstairs
+        state: 'on'
+    elements:
+      - type: image
+        tap_action:
+          action: none
+        hold_action:
+          action: none
+        entity:
+          - light.downstairs
+        image: /local/floorplan/light.downstairs.png?version=1139B84C92212B9F621BA497E491A1FC
+        filter: none
+        style:
+          left: 50%
+          top: 50%
+          width: 100%
+          mix-blend-mode: lighten
+  - type: custom:config-template-card
+    variables:
+      LIGHT_STATE: states['light.master_bedroom'].state
+      COLOR_MODE: states['light.master_bedroom'].attributes.color_mode
+      LIGHT_COLOR: states['light.master_bedroom'].attributes.hs_color
+      BRIGHTNESS: states['light.master_bedroom'].attributes.brightness
+    entities:
+      - light.master_bedroom
+    element:
+      type: image
+      image: /local/floorplan/transparent.png?version=56ABE4CBC175363DA0810882244B34FF
+      state_image:
+        'on': >-
+          ${COLOR_MODE === 'color_temp' || (COLOR_MODE === 'rgb' && LIGHT_COLOR && LIGHT_COLOR[0] == 0 && LIGHT_COLOR[1] == 0) ?
+          '/local/floorplan/light.master_bedroom.png?version=44E245F17DFD0283CE0AB74DF2B3D388' :
+          '/local/floorplan/light.master_bedroom.red.png?version=A42E6CF180F2C7D46FC0E7FDA77B2436' }
+      entity: light.master_bedroom
+    style:
+      filter: '${ "hue-rotate(" + (LIGHT_COLOR ? LIGHT_COLOR[0] : 0) + "deg)"}'
+      opacity: '${LIGHT_STATE === ''on'' ? (BRIGHTNESS / 255) : ''100''}'
+      mix-blend-mode: lighten
+      pointer-events: none
+      left: 50%
+      top: 50%
+      width: 100%
+  - type: custom:config-template-card
+    variables:
+      LIGHT_STATE: states['light.down_office'].state
+      COLOR_MODE: states['light.down_office'].attributes.color_mode
+      LIGHT_COLOR: states['light.down_office'].attributes.hs_color
+      BRIGHTNESS: states['light.down_office'].attributes.brightness
+    entities:
+      - light.down_office
+    element:
+      type: image
+      image: /local/floorplan/transparent.png?version=56ABE4CBC175363DA0810882244B34FF
+      state_image:
+        'on': >-
+          ${COLOR_MODE === 'color_temp' || (COLOR_MODE === 'rgb' && LIGHT_COLOR && LIGHT_COLOR[0] == 0 && LIGHT_COLOR[1] == 0) ?
+          '/local/floorplan/light.down_office.png?version=D759EEF68F9B297651E8D24F83DC1FDF' :
+          '/local/floorplan/light.down_office.red.png?version=343C98266786D8672FB3EC5E25C2A90B' }
+      entity: light.down_office
+    style:
+      filter: '${ "hue-rotate(" + (LIGHT_COLOR ? LIGHT_COLOR[0] : 0) + "deg)"}'
+      opacity: '${LIGHT_STATE === ''on'' ? (BRIGHTNESS / 255) : ''100''}'
+      mix-blend-mode: lighten
+      pointer-events: none
+      left: 50%
+      top: 50%
+      width: 100%
+  - type: custom:config-template-card
+    variables:
+      LIGHT_STATE: states['light.master_bathroom'].state
+      COLOR_MODE: states['light.master_bathroom'].attributes.color_mode
+      LIGHT_COLOR: states['light.master_bathroom'].attributes.hs_color
+      BRIGHTNESS: states['light.master_bathroom'].attributes.brightness
+    entities:
+      - light.master_bathroom
+    element:
+      type: image
+      image: /local/floorplan/transparent.png?version=56ABE4CBC175363DA0810882244B34FF
+      state_image:
+        'on': >-
+          ${COLOR_MODE === 'color_temp' || (COLOR_MODE === 'rgb' && LIGHT_COLOR && LIGHT_COLOR[0] == 0 && LIGHT_COLOR[1] == 0) ?
+          '/local/floorplan/light.master_bathroom.png?version=55CD025935DF74EE7FD88A478FD80F26' :
+          '/local/floorplan/light.master_bathroom.red.png?version=C7379AA7FBB6C6084C9B27B191F3028D' }
+      entity: light.master_bathroom
+    style:
+      filter: '${ "hue-rotate(" + (LIGHT_COLOR ? LIGHT_COLOR[0] : 0) + "deg)"}'
+      opacity: '${LIGHT_STATE === ''on'' ? (BRIGHTNESS / 255) : ''100''}'
+      mix-blend-mode: lighten
+      pointer-events: none
+      left: 50%
+      top: 50%
+      width: 100%
+  - type: state-icon
+    entity: light.rumpus
+    title: null
+    style:
+      top: 62.61%
+      left: 65.58%
+      border-radius: 50%
+      text-align: center
+      background-color: rgba(255, 255, 255, 0.3)
+    tap_action:
+      action: toggle
+  - type: state-icon
+    entity: light.down_hallway
+    title: null
+    style:
+      top: 62.65%
+      left: 44.46%
+      border-radius: 50%
+      text-align: center
+      background-color: rgba(255, 255, 255, 0.3)
+    tap_action:
+      action: toggle
+  - type: state-icon
+    entity: light.guestroom
+    title: null
+    style:
+      top: 47.50%
+      left: 25.57%
+      border-radius: 50%
+      text-align: center
+      background-color: rgba(255, 255, 255, 0.3)
+    tap_action:
+      action: toggle
+  - type: state-icon
+    entity: light.laundry
+    title: null
+    style:
+      top: 46.60%
+      left: 44.38%
+      border-radius: 50%
+      text-align: center
+      background-color: rgba(255, 255, 255, 0.3)
+    tap_action:
+      action: toggle
+  - type: state-icon
+    entity: light.storage
+    title: null
+    style:
+      top: 67.61%
+      left: 29.47%
+      border-radius: 50%
+      text-align: center
+      background-color: rgba(255, 255, 255, 0.3)
+    tap_action:
+      action: toggle
+  - type: state-icon
+    entity: light.rumpus_store
+    title: null
+    style:
+      top: 70.50%
+      left: 53.05%
+      border-radius: 50%
+      text-align: center
+      background-color: rgba(255, 255, 255, 0.3)
+    tap_action:
+      action: toggle
+  - type: state-icon
+    entity: switch.pond_lights
+    title: null
+    style:
+      top: 36.63%
+      left: 36.09%
+      border-radius: 50%
+      text-align: center
+      background-color: rgba(255, 255, 255, 0.3)
+    tap_action:
+      action: toggle
+  - type: state-icon
+    entity: light.downstairs
+    title: null
+    style:
+      top: 55.24%
+      left: 39.04%
+      border-radius: 50%
+      text-align: center
+      background-color: rgba(255, 255, 255, 0.3)
+    tap_action:
+      action: toggle
+  - type: state-icon
+    entity: light.master_bedroom
+    title: null
+    style:
+      top: 50.11%
+      left: 66.28%
+      border-radius: 50%
+      text-align: center
+      background-color: rgba(255, 255, 255, 0.3)
+    tap_action:
+      action: toggle
+  - type: state-icon
+    entity: light.down_office
+    title: null
+    style:
+      top: 59.13%
+      left: 24.50%
+      border-radius: 50%
+      text-align: center
+      background-color: rgba(255, 255, 255, 0.3)
+    tap_action:
+      action: toggle
+  - type: state-icon
+    entity: light.master_bathroom
+    title: null
+    style:
+      top: 45.39%
+      left: 56.70%
+      border-radius: 50%
+      text-align: center
+      background-color: rgba(255, 255, 255, 0.3)
+    tap_action:
+      action: toggle

@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace.map",
+  "data": {
+    "config": {
+      "title": "Map",
+      "views": [
+        {
+          "type": "panel",
+          "title": "Map",
+          "icon": "mdi:map",
+          "cards": [
+            {
+              "type": "map",
+              "auto_fit": true,
+              "entities": [
+                {
+                  "entity": "zone.child_care"
+                },
+                {
+                  "entity": "zone.mall"
+                },
+                {
+                  "entity": "zone.work"
+                },
+                {
+                  "entity": "zone.work_2"
+                },
+                {
+                  "entity": "zone.costco"
+                },
+                {
+                  "entity": "zone.zoo"
+                },
+                {
+                  "entity": "zone.work_3"
+                },
+                {
+                  "entity": "zone.home"
+                },
+                {
+                  "entity": "person.chris"
+                },
+                {
+                  "entity": "person.mon"
+                },
+                {
+                  "entity": "person.yin_lay"
+                },
+                {
+                  "entity": "zone.school"
+                }
+              ],
+              "hours_to_show": 10
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,124 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace_resources",
+  "data": {
+    "items": [
+      {
+        "id": "58440f31f4134c8dbb2961a0c0728292",
+        "type": "module",
+        "url": "local/community/lovelace-card-templater/lovelace-card-templater.js"
+      },
+      {
+        "id": "673070e44e1f4ab9b4573156ad38adda",
+        "type": "module",
+        "url": "local/community/config-template-card/config-template-card.js"
+      },
+      {
+        "id": "a5b097e445d04cec80e7f485aa9a63b6",
+        "type": "module",
+        "url": "local/community/lovelace-layout-card/layout-card.js"
+      },
+      {
+        "id": "150c74211cdb4e01be3ecc47f9f64d32",
+        "type": "module",
+        "url": "local/community/lovelace-auto-entities/auto-entities.js"
+      },
+      {
+        "id": "519c0fd3f00545769a026bb90162de83",
+        "type": "module",
+        "url": "local/community/lovelace-hass-aarlo/hass-aarlo.js"
+      },
+      {
+        "id": "60887d4acfd34f388a9a530fffcebc7a",
+        "type": "module",
+        "url": "local/community/mini-graph-card-bundle/mini-graph-card.js"
+      },
+      {
+        "id": "37a2d3be6fc14ff2aec301bde70c6f10",
+        "type": "module",
+        "url": "/local/resources/custom-ui/custom-ui.js"
+      },
+      {
+        "id": "47e39bb824c44b4f98f09dcd7028dbfc",
+        "type": "module",
+        "url": "local/community/calendar-card/calendar-card.js"
+      },
+      {
+        "url": "/hacsfiles/bom-weather-card/bom-weather-card.js?hacstag=195497310103",
+        "type": "module",
+        "id": "a6dbf26799e940aa9051cf346e99e128"
+      },
+      {
+        "url": "/hacsfiles/lovelace-hass-aarlo/hass-aarlo.js?hacstag=1972451790261",
+        "type": "module",
+        "id": "e98b50070431401b980942526dd32e10"
+      },
+      {
+        "url": "/hacsfiles/kodi-playlist-card/kodi-playlist-card.js?hacstag=328132422451",
+        "type": "module",
+        "id": "a43dd1dc6e064d3bb7d065be343be575"
+      },
+      {
+        "url": "/hacsfiles/config-template-card/config-template-card.js?hacstag=172177543136",
+        "type": "module",
+        "id": "f3557ea612a040f5b8705cf15d78c127"
+      },
+      {
+        "url": "/hacsfiles/lovelace-xiaomi-vacuum-card/xiaomi-vacuum-card.js?hacstag=180229356450",
+        "type": "module",
+        "id": "dd9e9b1f4fd142f1b3a71992172f6c78"
+      },
+      {
+        "url": "/hacsfiles/mini-graph-card/mini-graph-card-bundle.js?hacstag=1512800620130",
+        "type": "module",
+        "id": "b8cb949cb17e4edc864070e63c54dd91"
+      },
+      {
+        "url": "/hacsfiles/lovelace-auto-entities/auto-entities.js?hacstag=1677445841161",
+        "type": "module",
+        "id": "b40c7de1acd54eea830dfb81a58e82ae"
+      },
+      {
+        "url": "/hacsfiles/lovelace-card-templater/lovelace-card-templater.js",
+        "type": "module",
+        "id": "682a268e2b11468ab3423e05ef778718"
+      },
+      {
+        "url": "/hacsfiles/lovelace-card-mod/card-mod.js?hacstag=190927524421",
+        "type": "module",
+        "id": "8273388c44154e4db36ee68318577100"
+      },
+      {
+        "url": "/hacsfiles/opensprinkler-card/opensprinkler-card.js?hacstag=378256174113",
+        "type": "module",
+        "id": "1aa04a5387d041768503ab657b486265"
+      },
+      {
+        "url": "/hacsfiles/floor3d-card/floor3d-card.js?hacstag=361776538153",
+        "type": "module",
+        "id": "922210f2b0e0479bb532b3c78dd4911b"
+      },
+      {
+        "url": "local/community/floor3d-card/floor3d-card.js",
+        "type": "module",
+        "id": "2a084d326e4c44668910c183f55559ad"
+      },
+      {
+        "url": "/hacsfiles/platinum-weather-card/platinum-weather-card.js?hacstag=488086721105",
+        "type": "module",
+        "id": "6ef7efc5f8d742b98c69ec5d537fdfb5"
+      },
+      {
+        "url": "/hacsfiles/lovelace-xiaomi-vacuum-map-card/xiaomi-vacuum-map-card.js?hacstag=193372044232",
+        "type": "module",
+        "id": "059b33cb1b3047c7bd990264ad43a10c"
+      },
+      {
+        "url": "/hacsfiles/tv-card/tv-card.js?hacstag=505459170052",
+        "type": "module",
+        "id": "bd0fd8a8f96b4bbeac9ddc01f2de2146"
+      }
+    ]
+  }
+}
