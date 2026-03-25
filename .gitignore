@@ -39,7 +39,6 @@ Thumbs.db
 !.storage/core.entity_registry
 !.storage/core.device_registry
 !.storage/core.area_registry
-!.storage/core.config_entries
 !.storage/lovelace*
 !.storage/labels.storage
 
